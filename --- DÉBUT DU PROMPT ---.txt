@@ -1,4 +1,4 @@
---- DÉBUT DU PROMPT ---
+--- DÉBUT DU PROMPT --- Voir le fichier Portfolio.html
 
 Rôle : Tu es un Expert Développeur Full Stack Senior et Designer UI/UX spécialisé dans les portfolios personnels pour les profils hybrides (Tech & Management).
 
@@ -88,3 +88,29 @@ Section Admin : J'ai spécifiquement demandé un "Dashboard CRUD". C'est le cœu
 
 
 Design "Business" : Étant donné votre positionnement "Consultant en Stratégie", le design ne doit pas faire "trop" développeur junior, mais plutôt "Expert Corporate".
+
+
+
+La structure de mon projet Next : mon-projet-next/
+├── public/              # Assets statiques (images, polices, favicons)
+├── src/
+│   ├── app/             # App Router (Pages, Layouts, API routes)
+│   │   ├── (auth)/      # Groupes de routes (n'apparaissent pas dans l'URL)
+│   │   ├── (dashboard)/
+│   │   ├── api/         # Route Handlers (Backend-like)
+│   │   ├── layout.tsx   # Layout racine
+│   │   └── page.tsx     # Page d'accueil
+│   ├── components/      # Composants React réutilisables
+│   │   ├── ui/          # Composants de base (boutons, inputs - ex: Shadcn)
+│   │   ├── forms/       # Composants liés aux formulaires
+│   │   └── layouts/     # Composants de structure (Navbar, Footer)
+│   ├── hooks/           # Custom Hooks React
+│   ├── lib/             # Configurations de bibliothèques tierces (Prisma, Stripe, etc.)
+│   ├── services/        # Appels API et logique métier (Data fetching)
+│   ├── store/           # Gestion de l'état global (Zustand, Redux)
+│   ├── types/           # Définitions TypeScript (interfaces, types)
+│   └── utils/           # Fonctions utilitaires (formatage de date, etc.)
+├── .env.local           # Variables d'environnement
+├── next.config.mjs      # Configuration Next.js
+├── tailwind.config.ts   # Configuration Tailwind CSS
+└── tsconfig.json        # Configuration TypeScript
