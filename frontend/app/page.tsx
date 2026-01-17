@@ -1,9 +1,23 @@
+import Navigation from './components/Navigation';
+import Hero from './components/Hero';
+import About from './components/About';
+import Experience from './components/Experience';
+import Projects from './components/Projects';
+import Certifications from './components/Certifications';
+import Contact from './components/Contact';
+import Footer from './components/Footer';
+
 export default function Home() {
-  // Placeholder: je convertirai votre Portfolio.html ici en composants React
-  return (
-    <main>
-      <h1>Thiam Portfolio — Frontend (Next.js)</h1>
-      <p>La page sera remplacée par la conversion exacte de Portfolio.html.</p>
-    </main>
-  );
+    return (
+        <main>
+            <Navigation />
+            <Hero />
+            <About />
+            <Experience />
+            <Projects />
+            <Certifications />
+            <Contact />
+            <Footer />
+        </main>
+    );
 }

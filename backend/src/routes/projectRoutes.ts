@@ -1,27 +1,162 @@
-import { Router } from "express";
-import Project from "../models/Project";
+import express, { Response } from 'express';
+import multer from 'multer';
+import Project from '../models/Project';
+import { authMiddleware, AuthRequest } from '../middleware/auth';
+import supabaseAdmin from '../lib/supabase';
 
-const router = Router();
+const router = express.Router();
 
-router.get("/", async (req, res) => {
-  const projects = await Project.find({});
-  res.json(projects);
+// Configure multer for memory storage
+const upload = multer({ storage: multer.memoryStorage() });
+
+// Get all projects (public - only visible)
+router.get('/', async (req, res: Response) => {
+  try {
+    const projects = await Project.find().sort({ createdAt: -1 });
+    res.json(projects);
+  } catch (error) {
+    console.error('Get projects error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
-router.post("/", async (req, res) => {
-  const body = req.body;
-  const created = await Project.create(body);
-  res.status(201).json(created);
+// Get single project
+router.get('/:id', async (req, res: Response) => {
+  try {
+    const project = await Project.findById(req.params.id);
+    if (!project) {
+      res.status(404).json({ message: 'Project not found' });
+      return;
+    }
+    res.json(project);
+  } catch (error) {
+    console.error('Get project error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
-router.put('/:id', async (req, res) => {
-  const updated = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true });
-  res.json(updated);
-});
+// Create project with image upload (admin only)
+router.post(
+  '/',
+  authMiddleware,
+  upload.single('image'),
+  async (req: AuthRequest, res: Response) => {
+    try {
+      let imageUrl = '';
 
-router.delete('/:id', async (req, res) => {
-  await Project.findByIdAndDelete(req.params.id);
-  res.status(204).end();
+      // Upload image to Supabase if provided
+      if (req.file) {
+        const fileName = `${Date.now()}-${req.file.originalname}`;
+        const { data, error } = await supabaseAdmin.storage
+          .from('images')
+          .upload(`projects/${fileName}`, req.file.buffer, {
+            contentType: req.file.mimetype,
+            upsert: false,
+          });
+
+        if (error) {
+          console.error('Supabase upload error:', error);
+          res.status(500).json({ message: 'Image upload failed' });
+          return;
+        }
+
+        // Get public URL
+        const { data: urlData } = supabaseAdmin.storage
+          .from('images')
+          .getPublicUrl(data.path);
+
+        imageUrl = urlData.publicUrl;
+      }
+
+      const projectData = {
+        ...req.body,
+        cover_url: imageUrl || req.body.cover_url,
+      };
+
+      const project = new Project(projectData);
+      await project.save();
+
+      res.status(201).json(project);
+    } catch (error) {
+      console.error('Create project error:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  }
+);
+
+// Update project (admin only)
+router.put(
+  '/:id',
+  authMiddleware,
+  upload.single('image'),
+  async (req: AuthRequest, res: Response) => {
+    try {
+      let imageUrl: string | undefined;
+
+      // Upload new image if provided
+      if (req.file) {
+        const fileName = `${Date.now()}-${req.file.originalname}`;
+        const { data, error } = await supabaseAdmin.storage
+          .from('images')
+          .upload(`projects/${fileName}`, req.file.buffer, {
+            contentType: req.file.mimetype,
+            upsert: false,
+          });
+
+        if (error) {
+          console.error('Supabase upload error:', error);
+          res.status(500).json({ message: 'Image upload failed' });
+          return;
+        }
+
+        const { data: urlData } = supabaseAdmin.storage
+          .from('images')
+          .getPublicUrl(data.path);
+
+        imageUrl = urlData.publicUrl;
+      }
+
+      const updateData = {
+        ...req.body,
+        ...(imageUrl && { cover_url: imageUrl }),
+      };
+
+      const project = await Project.findByIdAndUpdate(
+        req.params.id,
+        updateData,
+        { new: true, runValidators: true }
+      );
+
+      if (!project) {
+        res.status(404).json({ message: 'Project not found' });
+        return;
+      }
+
+      res.json(project);
+    } catch (error) {
+      console.error('Update project error:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  }
+);
+
+// Delete project (admin only)
+router.delete('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
+  try {
+    const project = await Project.findByIdAndDelete(req.params.id);
+    if (!project) {
+      res.status(404).json({ message: 'Project not found' });
+      return;
+    }
+
+    // Optionally delete image from Supabase
+    // You can extract the path from cover_url and delete it
+
+    res.json({ message: 'Project deleted successfully' });
+  } catch (error) {
+    console.error('Delete project error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 export default router;
