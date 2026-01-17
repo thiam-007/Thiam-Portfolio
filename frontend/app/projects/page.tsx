@@ -1,0 +1,156 @@
+'use client';
+
+import { useState } from 'react';
+import useSWR from 'swr';
+import Link from 'next/link';
+import type { Project as ProjectType } from '@/types';
+import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
+const fetcher = (url: string) => fetch(url).then(res => {
+    if (!res.ok) throw new Error('Failed to fetch');
+    return res.json();
+});
+
+export default function ProjectsPage() {
+    const [selectedProject, setSelectedProject] = useState<ProjectType | null>(null);
+    const { data: projects, error } = useSWR<ProjectType[]>(
+        `${API_URL}/api/projects/public`,
+        fetcher
+    );
+
+    return (
+        <>
+            <Navigation />
+            <main className="min-h-screen pt-24 pb-20 bg-[var(--primary)]">
+                <div className="container mx-auto px-6">
+                    <div className="mb-8">
+                        <Link href="/#projects" className="text-[var(--accent)] hover:underline">
+                            ← Retour à l&apos;accueil
+                        </Link>
+                    </div>
+
+                    <h1 className="text-4xl font-bold mb-12 text-center">
+                        <span className="text-[var(--accent)]">Tous mes</span> Projets
+                    </h1>
+
+                    {error && (
+                        <div className="text-center text-red-500 mb-8">
+                            Erreur de chargement des projets
+                        </div>
+                    )}
+
+                    {!projects && !error && (
+                        <div className="text-center text-[var(--gray)]">
+                            <div className="spinner inline-block"></div>
+                            <p className="mt-2">Chargement...</p>
+                        </div>
+                    )}
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {projects?.map((project) => (
+                            <div
+                                key={project._id}
+                                className="bg-[var(--secondary)] rounded-lg overflow-hidden shadow-lg project-card transition-all duration-300 cursor-pointer"
+                                onClick={() => setSelectedProject(project)}
+                            >
+                                <div className="h-48 overflow-hidden">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
+                                        src={project.imageUrl || 'https://via.placeholder.com/400x300'}
+                                        alt={project.title}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                                <div className="p-6">
+                                    <h3 className="text-xl font-semibold mb-3">{project.title}</h3>
+                                    <p className="text-[var(--gray)] mb-4 line-clamp-3">{project.description}</p>
+                                    <div className="flex flex-wrap gap-2 mb-4">
+                                        {project.tags?.slice(0, 3).map((tag, i) => (
+                                            <span key={i} className="bg-[var(--primary)] rounded-full px-3 py-1 text-xs">
+                                                {tag}
+                                            </span>
+                                        ))}
+                                    </div>
+                                    <button className="text-[var(--accent)] flex items-center">
+                                        <span>En savoir plus</span>
+                                        <i className="fas fa-arrow-right ml-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {projects && projects.length === 0 && (
+                        <p className="text-center text-[var(--gray)]">
+                            Aucun projet pour le moment.
+                        </p>
+                    )}
+                </div>
+
+                {/* Project Modal */}
+                {selectedProject && (
+                    <div className={`modal active`} onClick={() => setSelectedProject(null)}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                            <div className="flex justify-between items-start mb-6">
+                                <h3 className="text-2xl font-bold">{selectedProject.title}</h3>
+                                <button onClick={() => setSelectedProject(null)} className="text-2xl hover:text-[var(--accent)]">
+                                    &times;
+                                </button>
+                            </div>
+
+                            <div className="mb-6">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                    src={selectedProject.imageUrl || 'https://via.placeholder.com/600x400'}
+                                    alt={selectedProject.title}
+                                    className="w-full h-64 object-cover rounded-lg"
+                                />
+                            </div>
+
+                            <div className="mb-6">
+                                <p className="whitespace-pre-wrap">{selectedProject.fullDescription || selectedProject.description}</p>
+                            </div>
+
+                            <div className="flex flex-wrap gap-2 mb-6">
+                                {selectedProject.tags?.map((tag, i) => (
+                                    <span key={i} className="bg-[var(--accent)] bg-opacity-20 text-[var(--accent)] rounded-full px-3 py-1 text-sm">
+                                        {tag}
+                                    </span>
+                                ))}
+                            </div>
+
+                            <div className="flex flex-wrap gap-4">
+                                {selectedProject.link && (
+                                    <a
+                                        href={selectedProject.link}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="btn-primary inline-flex items-center"
+                                    >
+                                        <i className="fas fa-external-link-alt mr-2"></i>
+                                        Voir le projet
+                                    </a>
+                                )}
+                                {selectedProject.githubLink && (
+                                    <a
+                                        href={selectedProject.githubLink}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="btn-primary inline-flex items-center"
+                                    >
+                                        <i className="fab fa-github mr-2"></i>
+                                        Code source
+                                    </a>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </main>
+            <Footer />
+        </>
+    );
+}

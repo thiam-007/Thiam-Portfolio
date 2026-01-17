@@ -37,10 +37,18 @@ export interface Project {
     _id: string;
     title: string;
     description?: string;
+    fullDescription?: string;
     tech?: string[];
+    tags?: string[];
     cover_url?: string;
+    imageUrl?: string;
     project_url?: string;
+    link?: string;
+    githubLink?: string;
+    order?: number;
+    isVisible?: boolean;
     createdAt: string;
+    updatedAt?: string;
 }
 
 // Certification Types

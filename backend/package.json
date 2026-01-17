@@ -8,7 +8,9 @@
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@sendinblue/client": "^3.3.1",
     "@supabase/supabase-js": "^2.39.0",
+    "axios": "^1.13.2",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",

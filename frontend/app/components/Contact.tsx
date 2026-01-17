@@ -1,13 +1,9 @@
 'use client';
 
 import { useState, useEffect, FormEvent } from 'react';
+import toast from 'react-hot-toast';
 
-// Profil statique
-const profile = {
-    email: 'contact@cheickthiam.com',
-    phone: '+33 6 00 00 00 00',
-    location: 'Paris, France',
-};
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 export default function Contact() {
     const [formData, setFormData] = useState({
@@ -17,7 +13,6 @@ export default function Contact() {
         message: '',
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [formStatus, setFormStatus] = useState('');
 
     useEffect(() => {
         const revealElements = () => {
@@ -39,12 +34,26 @@ export default function Contact() {
         e.preventDefault();
         setIsSubmitting(true);
 
-        // Simulation envoi
-        setTimeout(() => {
-            setFormStatus('success');
+        try {
+            const response = await fetch(`${API_URL}/api/contact`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to send message');
+            }
+
+            toast.success('Message envoyé avec succès! Je vous répondrai dans les plus brefs délais.');
             setFormData({ name: '', email: '', subject: '', message: '' });
+        } catch (error) {
+            toast.error('Erreur lors de l\'envoi du message. Veuillez réessayer.');
+        } finally {
             setIsSubmitting(false);
-        }, 1500);
+        }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -52,6 +61,13 @@ export default function Contact() {
             ...formData,
             [e.target.id]: e.target.value,
         });
+    };
+
+    // Profile data (can be fetched from API later)
+    const profile = {
+        email: process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'contact@cheickthiam.com',
+        phone: '+33 6 00 00 00 00',
+        location: 'Paris, France',
     };
 
     return (
@@ -112,7 +128,7 @@ export default function Contact() {
                                 <i className="fab fa-github"></i>
                             </a>
                             <a href="#" className="w-10 h-10 rounded-full bg-[var(--secondary)] flex items-center justify-center hover:bg-[var(--accent)] transition-colors duration-300">
-                                <i className="fab fa-twitter"></i>
+                                <i className="fab fa-facebook"></i>
                             </a>
                         </div>
                     </div>
@@ -180,7 +196,7 @@ export default function Contact() {
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="btn-primary w-full flex items-center justify-center"
+                                    className="btn-primary w-full flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {isSubmitting ? (
                                         <>
@@ -192,12 +208,6 @@ export default function Contact() {
                                     )}
                                 </button>
                             </div>
-
-                            {formStatus === 'success' && (
-                                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
-                                    Message envoyé avec succès! Je vous répondrai dans les plus brefs délais.
-                                </div>
-                            )}
                         </form>
                     </div>
                 </div>

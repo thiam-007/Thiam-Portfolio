@@ -10,8 +10,7 @@ router.post('/', async (req: Request, res: Response) => {
         const { name, email, subject, message } = req.body;
 
         if (!name || !email || !subject || !message) {
-            res.status(400).json({ message: 'All fields are required' });
-            return;
+            return res.status(400).json({ message: 'Tous les champs sont requis' });
         }
 
         const contact = new Contact({
@@ -19,21 +18,28 @@ router.post('/', async (req: Request, res: Response) => {
             email,
             subject,
             message,
+            isRead: false,
         });
 
         await contact.save();
 
-        res.status(201).json({
-            message: 'Message sent successfully',
-            contact: {
-                id: contact._id,
-                name: contact.name,
-                createdAt: contact.createdAt,
-            },
+        // Envoyer email de notification à l'admin
+        const { sendContactNotification } = await import('../lib/email');
+        await sendContactNotification({
+            name,
+            email,
+            subject,
+            message,
+            date: contact.createdAt || new Date(),
         });
-    } catch (error) {
-        console.error('Contact form error:', error);
-        res.status(500).json({ message: 'Server error' });
+
+        res.status(201).json({
+            message: 'Message envoyé avec succès',
+            contact
+        });
+    } catch (error: any) {
+        console.error('Error creating contact:', error);
+        res.status(500).json({ message: 'Erreur lors de l\'envoi du message' });
     }
 });
 

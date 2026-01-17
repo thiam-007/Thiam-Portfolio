@@ -1,9 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import useSWR from 'swr';
-import type { Experience as ExperienceType } from '../types';
 import Link from 'next/link';
+import type { Experience as ExperienceType } from '@/types';
+import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -12,74 +14,11 @@ const fetcher = (url: string) => fetch(url).then(res => {
     return res.json();
 });
 
-export default function Experience() {
-    const { data: experiences, error } = useSWR<ExperienceType[]>(
-        `${API_URL}/api/experiences/public`,
-        fetcher
-    );
-
-    useEffect(() => {
-        const revealElements = () => {
-            const elements = document.querySelectorAll('.reveal');
-            elements.forEach((el) => {
-                const rect = el.getBoundingClientRect();
-                if (rect.top < window.innerHeight - 150) {
-                    el.classList.add('active');
-                }
-            });
-        };
-
-        revealElements();
-        window.addEventListener('scroll', revealElements);
-        return () => window.removeEventListener('scroll', revealElements);
-    }, []);
-
-    const displayExperiences = experiences?.slice(0, 4) || [];
-    const hasMore = (experiences?.length || 0) > 4;
-
-    return (
-        <section id="experience" className="py-20 bg-[var(--secondary)]">
-            <div className="container mx-auto px-6">
-                <h2 className="text-3xl font-bold mb-12 text-center reveal">
-                    <span className="text-[var(--accent)]">#</span> Parcours professionnel
-                </h2>
-
-                {error && (
-                    <div className="text-center text-red-500 mb-8">
-                        Erreur de chargement des expériences
-                    </div>
-                )}
-
-                {!experiences && !error && (
-                    <div className="text-center text-[var(--gray)]">
-                        <div className="spinner inline-block"></div>
-                        <p className="mt-2">Chargement...</p>
-                    </div>
-                )}
-
-                <div className="relative pl-8">
-                    {displayExperiences.map((exp) => (
-                        <ExperienceCard key={exp._id} experience={exp} />
-                    ))}
-                </div>
-
-                {hasMore && (
-                    <div className="text-center mt-12 reveal">
-                        <Link href="/experiences" className="btn-primary inline-block">
-                            Voir toutes les expériences
-                        </Link>
-                    </div>
-                )}
-            </div>
-        </section>
-    );
-}
-
 function ExperienceCard({ experience: exp }: { experience: ExperienceType }) {
     const [isExpanded, setIsExpanded] = useState(false);
 
     return (
-        <div className="timeline-item pb-12 reveal">
+        <div className="timeline-item pb-12">
             <div className="timeline-dot"></div>
             <div className="bg-[var(--primary)] p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <div className="flex flex-wrap justify-between items-center mb-4">
@@ -125,5 +64,58 @@ function ExperienceCard({ experience: exp }: { experience: ExperienceType }) {
                 )}
             </div>
         </div>
+    );
+}
+
+export default function ExperiencesPage() {
+    const { data: experiences, error } = useSWR<ExperienceType[]>(
+        `${API_URL}/api/experiences/public`,
+        fetcher
+    );
+
+    return (
+        <>
+            <Navigation />
+            <main className="min-h-screen pt-24 pb-20 bg-[var(--secondary)]">
+                <div className="container mx-auto px-6">
+                    {/* Breadcrumb */}
+                    <div className="mb-8">
+                        <Link href="/#experience" className="text-[var(--accent)] hover:underline">
+                            ← Retour à l&apos;accueil
+                        </Link>
+                    </div>
+
+                    <h1 className="text-4xl font-bold mb-12 text-center">
+                        <span className="text-[var(--accent)]">Toutes mes</span> Expériences
+                    </h1>
+
+                    {error && (
+                        <div className="text-center text-red-500 mb-8">
+                            Erreur de chargement des expériences
+                        </div>
+                    )}
+
+                    {!experiences && !error && (
+                        <div className="text-center text-[var(--gray)]">
+                            <div className="spinner inline-block"></div>
+                            <p className="mt-2">Chargement...</p>
+                        </div>
+                    )}
+
+                    <div className="relative pl-8">
+                        {experiences?.map((exp) => (
+                            <ExperienceCard key={exp._id} experience={exp} />
+                        ))}
+                    </div>
+
+                    {experiences && experiences.length === 0 && (
+                        <p className="text-center text-[var(--gray)]">
+                            Aucune expérience pour le moment.
+                        </p>
+                    )}
+                </div>
+            </main>
+            <Footer />
+        </>
     );
 }
