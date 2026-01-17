@@ -45,7 +45,7 @@ export default function Navigation() {
         >
             <div className="container mx-auto px-6 py-3 flex justify-between items-center">
                 <Link href="/" className="text-2xl font-bold">
-                    <span className="text-[var(--accent)]">C</span>AT
+                    <span className="text-[var(--accent)]">Cheick </span>Ahmed <span className="text-[var(--accent)]">Thiam</span>
                 </Link>
 
                 {/* Desktop Menu */}
