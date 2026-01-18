@@ -5,59 +5,59 @@ const apiKey = apiInstance.authentications['apiKey'];
 apiKey.apiKey = process.env.BREVO_API_KEY || '';
 
 interface EmailOptions {
-    to: string;
-    subject: string;
-    htmlContent: string;
-    textContent?: string;
+  to: string;
+  subject: string;
+  htmlContent: string;
+  textContent?: string;
 }
 
 export const sendEmail = async (options: EmailOptions): Promise<boolean> => {
-    if (!process.env.BREVO_API_KEY || process.env.BREVO_API_KEY.includes('placeholder')) {
-        console.warn('⚠️  Brevo API key not configured - email not sent');
-        return false;
+  if (!process.env.BREVO_API_KEY || process.env.BREVO_API_KEY.includes('placeholder')) {
+    console.warn('⚠️  Brevo API key not configured - email not sent');
+    return false;
+  }
+
+  try {
+    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+
+    sendSmtpEmail.sender = {
+      name: 'Portfolio Cheick Ahmed Thiam',
+      email: process.env.ADMIN_EMAIL || 'noreply@cheickthiam.com',
+    };
+
+    sendSmtpEmail.to = [{ email: options.to }];
+    sendSmtpEmail.subject = options.subject;
+    sendSmtpEmail.htmlContent = options.htmlContent;
+
+    if (options.textContent) {
+      sendSmtpEmail.textContent = options.textContent;
     }
 
-    try {
-        const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
-
-        sendSmtpEmail.sender = {
-            name: 'Portfolio Cheick Ahmed Thiam',
-            email: process.env.ADMIN_EMAIL || 'noreply@cheickthiam.com',
-        };
-
-        sendSmtpEmail.to = [{ email: options.to }];
-        sendSmtpEmail.subject = options.subject;
-        sendSmtpEmail.htmlContent = options.htmlContent;
-
-        if (options.textContent) {
-            sendSmtpEmail.textContent = options.textContent;
-        }
-
-        await apiInstance.sendTransacEmail(sendSmtpEmail);
-        console.log(`✅ Email sent successfully to ${options.to}`);
-        return true;
-    } catch (error: any) {
-        console.error('❌ Error sending email:', error.message);
-        return false;
-    }
+    await apiInstance.sendTransacEmail(sendSmtpEmail);
+    console.log(`✅ Email sent successfully to ${options.to}`);
+    return true;
+  } catch (error: any) {
+    console.error('❌ Error sending email:', error.message);
+    return false;
+  }
 };
 
 // Template pour notification de contact
 export const sendContactNotification = async (contactData: {
-    name: string;
-    email: string;
-    subject: string;
-    message: string;
-    date: Date;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  date: Date;
 }): Promise<boolean> => {
-    const adminEmail = process.env.ADMIN_EMAIL;
+  const adminEmail = process.env.ADMIN_EMAIL;
 
-    if (!adminEmail) {
-        console.error('❌ ADMIN_EMAIL not configured');
-        return false;
-    }
+  if (!adminEmail) {
+    console.error('❌ ADMIN_EMAIL not configured');
+    return false;
+  }
 
-    const htmlContent = `
+  const htmlContent = `
     <!DOCTYPE html>
     <html>
     <head>
@@ -93,9 +93,9 @@ export const sendContactNotification = async (contactData: {
           <div class="field">
             <div class="label">Date:</div>
             <div class="value">${contactData.date.toLocaleString('fr-FR', {
-        dateStyle: 'full',
-        timeStyle: 'short'
-    })}</div>
+    dateStyle: 'full',
+    timeStyle: 'short'
+  })}</div>
           </div>
           <div class="field">
             <div class="label">Message:</div>
@@ -110,7 +110,7 @@ export const sendContactNotification = async (contactData: {
     </html>
   `;
 
-    const textContent = `
+  const textContent = `
 Nouveau Message de Contact
 
 De: ${contactData.name}
@@ -122,12 +122,12 @@ Message:
 ${contactData.message}
   `;
 
-    return sendEmail({
-        to: adminEmail,
-        subject: `📬 Nouveau contact: ${contactData.subject}`,
-        htmlContent,
-        textContent,
-    });
+  return sendEmail({
+    to: adminEmail,
+    subject: `📬 Nouveau contact: ${contactData.subject}`,
+    htmlContent,
+    textContent,
+  });
 };
 
 export default { sendEmail, sendContactNotification };

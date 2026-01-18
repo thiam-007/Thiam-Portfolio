@@ -1,6 +1,6 @@
+import 'dotenv/config'; // Must be first
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import connectToDatabase from './lib/mongodb';
 import authRoutes from './routes/auth';
 import experienceRoutes from './routes/experiences';
@@ -9,7 +9,6 @@ import certificationRoutes from './routes/certifications';
 import contactRoutes from './routes/contact';
 import profileRoutes from './routes/profile';
 
-dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 

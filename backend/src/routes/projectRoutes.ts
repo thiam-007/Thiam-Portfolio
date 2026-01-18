@@ -95,6 +95,14 @@ router.put(
 
       // Upload new image if provided
       if (req.file) {
+        if (!supabaseAdmin) {
+          console.warn('Supabase not configured - skipping upload');
+          // If we strictly require upload, we could return 400 here.
+          // But to prevent crash we just log it or return error if critical.
+          res.status(400).json({ message: 'Storage service not configured' });
+          return;
+        }
+
         const fileName = `${Date.now()}-${req.file.originalname}`;
         const { data, error } = await supabaseAdmin.storage
           .from('images')

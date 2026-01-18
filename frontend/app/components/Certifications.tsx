@@ -16,7 +16,7 @@ const fetcher = (url: string) => fetch(url).then(res => {
 export default function Certifications() {
     const [selectedCert, setSelectedCert] = useState<CertificationType | null>(null);
     const { data: certifications, error } = useSWR<CertificationType[]>(
-        `${API_URL}/api/certifications/public`,
+        `${API_URL}/api/certifications`,
         fetcher
     );
 
@@ -138,10 +138,20 @@ export default function Certifications() {
                                         })}
                                     </p>
                                 )}
+
+                                {selectedCert.cover_image && (
+                                    <div className="mt-4 mb-4">
+                                        <img
+                                            src={selectedCert.cover_image}
+                                            alt={selectedCert.title}
+                                            className="w-full h-48 object-cover rounded-lg"
+                                        />
+                                    </div>
+                                )}
                             </div>
                             <button
                                 onClick={() => setSelectedCert(null)}
-                                className="text-2xl hover:text-[var(--accent)]"
+                                className="text-2xl hover:text-[var(--accent)] self-start"
                             >
                                 &times;
                             </button>
@@ -151,27 +161,31 @@ export default function Certifications() {
                             <p className="whitespace-pre-wrap">{selectedCert.description}</p>
                         </div>
 
-                        {selectedCert.tags && selectedCert.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mb-6">
-                                {selectedCert.tags.map((tag, i) => (
+                        <div className="flex flex-wrap gap-2 mb-6">
+                            {selectedCert.tags && selectedCert.tags.length > 0 ? (
+                                selectedCert.tags.map((tag, i) => (
                                     <span
                                         key={i}
                                         className="bg-[var(--accent)] bg-opacity-20 text-[var(--accent)] rounded-full px-3 py-1 text-sm"
                                     >
                                         {tag}
                                     </span>
-                                ))}
-                            </div>
-                        )}
+                                ))
+                            ) : (
+                                <span className="text-[var(--gray)] text-sm italic">Aucun tag spécifié</span>
+                            )}
+                        </div>
 
                         {selectedCert.file_path && (
-                            <button
-                                onClick={() => handleDownload(selectedCert._id, selectedCert.title)}
+                            <a
+                                href={`${API_URL}/api/certifications/${selectedCert._id}/download`}
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="btn-primary inline-flex items-center"
                             >
-                                <i className="fas fa-download mr-2"></i>
-                                Télécharger le certificat
-                            </button>
+                                <i className="fas fa-eye mr-2"></i>
+                                Voir la certification
+                            </a>
                         )}
                     </div>
                 </div>

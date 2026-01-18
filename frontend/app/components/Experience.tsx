@@ -14,7 +14,7 @@ const fetcher = (url: string) => fetch(url).then(res => {
 
 export default function Experience() {
     const { data: experiences, error } = useSWR<ExperienceType[]>(
-        `${API_URL}/api/experiences/public`,
+        `${API_URL}/api/experiences`,
         fetcher
     );
 

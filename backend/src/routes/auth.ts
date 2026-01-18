@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Admin from '../models/Admin';
+import { authMiddleware, AuthRequest } from '../middleware/auth';
 
 const router = express.Router();
 
@@ -50,34 +51,50 @@ router.post('/login', async (req: Request, res: Response) => {
     }
 });
 
-// Create initial admin (should be run once, then disabled)
-router.post('/create-admin', async (req: Request, res: Response) => {
+// Get current admin info (protected)
+router.get('/me', authMiddleware, async (req: AuthRequest, res: Response) => {
     try {
-        const { email, password, name } = req.body;
+        const admin = await Admin.findById(req.adminId).select('-password -__v');
+        if (!admin) {
+            res.status(404).json({ message: 'Admin not found' });
+            return;
+        }
+        res.json(admin);
+    } catch (error) {
+        console.error('Get admin error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
 
-        if (!email || !password || !name) {
-            res.status(400).json({ message: 'All fields are required' });
+// Update admin profile (name, email) - protected
+router.put('/profile', authMiddleware, async (req: AuthRequest, res: Response) => {
+    try {
+        const { name, email } = req.body;
+
+        const admin = await Admin.findById(req.adminId);
+        if (!admin) {
+            res.status(404).json({ message: 'Admin not found' });
             return;
         }
 
-        const existingAdmin = await Admin.findOne({ email });
-        if (existingAdmin) {
-            res.status(400).json({ message: 'Admin already exists' });
-            return;
+        // Check if email is being changed to one that already exists
+        if (email && email !== admin.email) {
+            const existingAdmin = await Admin.findOne({ email });
+            if (existingAdmin) {
+                res.status(400).json({ message: 'Email already in use' });
+                return;
+            }
+            admin.email = email;
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const admin = new Admin({
-            email,
-            password: hashedPassword,
-            name,
-        });
+        if (name) {
+            admin.name = name;
+        }
 
         await admin.save();
 
-        res.status(201).json({
-            message: 'Admin created successfully',
+        res.json({
+            message: 'Profile updated successfully',
             admin: {
                 id: admin._id,
                 email: admin.email,
@@ -85,7 +102,44 @@ router.post('/create-admin', async (req: Request, res: Response) => {
             },
         });
     } catch (error) {
-        console.error('Create admin error:', error);
+        console.error('Update profile error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Change password (protected)
+router.put('/password', authMiddleware, async (req: AuthRequest, res: Response) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+
+        if (!currentPassword || !newPassword) {
+            res.status(400).json({ message: 'Current password and new password are required' });
+            return;
+        }
+
+        if (newPassword.length < 6) {
+            res.status(400).json({ message: 'New password must be at least 6 characters' });
+            return;
+        }
+
+        const admin = await Admin.findById(req.adminId);
+        if (!admin) {
+            res.status(404).json({ message: 'Admin not found' });
+            return;
+        }
+
+        const isPasswordValid = await bcrypt.compare(currentPassword, admin.password);
+        if (!isPasswordValid) {
+            res.status(401).json({ message: 'Current password is incorrect' });
+            return;
+        }
+
+        admin.password = await bcrypt.hash(newPassword, 10);
+        await admin.save();
+
+        res.json({ message: 'Password changed successfully' });
+    } catch (error) {
+        console.error('Change password error:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });

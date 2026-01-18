@@ -17,7 +17,7 @@ const fetcher = (url: string) => fetch(url).then(res => {
 export default function ProjectsPage() {
     const [selectedProject, setSelectedProject] = useState<ProjectType | null>(null);
     const { data: projects, error } = useSWR<ProjectType[]>(
-        `${API_URL}/api/projects/public`,
+        `${API_URL}/api/projects`,
         fetcher
     );
 
@@ -59,7 +59,7 @@ export default function ProjectsPage() {
                                 <div className="h-48 overflow-hidden">
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img
-                                        src={project.imageUrl || 'https://via.placeholder.com/400x300'}
+                                        src={project.cover_url || 'https://via.placeholder.com/400x300'}
                                         alt={project.title}
                                         className="w-full h-full object-cover"
                                     />
@@ -68,7 +68,7 @@ export default function ProjectsPage() {
                                     <h3 className="text-xl font-semibold mb-3">{project.title}</h3>
                                     <p className="text-[var(--gray)] mb-4 line-clamp-3">{project.description}</p>
                                     <div className="flex flex-wrap gap-2 mb-4">
-                                        {project.tags?.slice(0, 3).map((tag, i) => (
+                                        {project.tech?.slice(0, 3).map((tag, i) => (
                                             <span key={i} className="bg-[var(--primary)] rounded-full px-3 py-1 text-xs">
                                                 {tag}
                                             </span>
@@ -104,7 +104,7 @@ export default function ProjectsPage() {
                             <div className="mb-6">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
-                                    src={selectedProject.imageUrl || 'https://via.placeholder.com/600x400'}
+                                    src={selectedProject.cover_url || 'https://via.placeholder.com/600x400'}
                                     alt={selectedProject.title}
                                     className="w-full h-64 object-cover rounded-lg"
                                 />
@@ -115,11 +115,15 @@ export default function ProjectsPage() {
                             </div>
 
                             <div className="flex flex-wrap gap-2 mb-6">
-                                {selectedProject.tags?.map((tag, i) => (
-                                    <span key={i} className="bg-[var(--accent)] bg-opacity-20 text-[var(--accent)] rounded-full px-3 py-1 text-sm">
-                                        {tag}
-                                    </span>
-                                ))}
+                                {selectedProject.tech && selectedProject.tech.length > 0 ? (
+                                    selectedProject.tech.map((tag, i) => (
+                                        <span key={i} className="bg-[var(--accent)] bg-opacity-20 text-[var(--accent)] rounded-full px-3 py-1 text-sm">
+                                            {tag}
+                                        </span>
+                                    ))
+                                ) : (
+                                    <span className="text-[var(--gray)] text-sm italic">Aucune technologie spécifiée</span>
+                                )}
                             </div>
 
                             <div className="flex flex-wrap gap-4">

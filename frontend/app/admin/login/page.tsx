@@ -65,6 +65,11 @@ export default function AdminLoginPage() {
                                 className="admin-input"
                                 required
                             />
+                            <div className="mt-2 text-right">
+                                <a href="/admin/settings" className="text-xs text-[var(--accent)] hover:underline">
+                                    Mot de passe oublié ?
+                                </a>
+                            </div>
                         </div>
 
                         <button

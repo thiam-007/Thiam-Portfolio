@@ -42,39 +42,39 @@ export default function AdminDashboard() {
             </nav>
 
             <div className="container mx-auto px-6 py-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                    <div className="admin-card">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <Link href="/admin/experiences" className="admin-card hover:bg-[var(--secondary)]/80 transition-colors block cursor-pointer">
                         <h3 className="text-xl font-semibold mb-4 text-[var(--accent)]">
                             <i className="fas fa-briefcase mr-2"></i>
                             Experiences
                         </h3>
                         <p className="text-[var(--gray)] mb-4">Gérez votre parcours professionnel</p>
                         <div className="text-sm text-[var(--gray)] mb-4">
-                            CRUD pour les expériences sera implémenté ici
+                            Ajouter, modifier ou supprimer des expériences
                         </div>
-                    </div>
+                    </Link>
 
-                    <div className="admin-card">
+                    <Link href="/admin/projects" className="admin-card hover:bg-[var(--secondary)]/80 transition-colors block cursor-pointer">
                         <h3 className="text-xl font-semibold mb-4 text-[var(--accent)]">
                             <i className="fas fa-folder-open mr-2"></i>
                             Projets
                         </h3>
                         <p className="text-[var(--gray)] mb-4">Gérez vos projets réalisés</p>
                         <div className="text-sm text-[var(--gray)] mb-4">
-                            CRUD pour les projets sera implémenté ici
+                            Ajouter, modifier ou supprimer des projets
                         </div>
-                    </div>
+                    </Link>
 
-                    <div className="admin-card">
+                    <Link href="/admin/certifications" className="admin-card hover:bg-[var(--secondary)]/80 transition-colors block cursor-pointer">
                         <h3 className="text-xl font-semibold mb-4 text-[var(--accent)]">
                             <i className="fas fa-certificate mr-2"></i>
                             Certifications
                         </h3>
                         <p className="text-[var(--gray)] mb-4">Gérez vos certifications</p>
                         <div className="text-sm text-[var(--gray)] mb-4">
-                            CRUD pour les certifications sera implémenté ici
+                            Ajouter, modifier ou supprimer des certifications
                         </div>
-                    </div>
+                    </Link>
 
                     <div className="admin-card">
                         <h3 className="text-xl font-semibold mb-4 text-[var(--accent)]">
@@ -87,74 +87,27 @@ export default function AdminDashboard() {
                         </div>
                     </div>
 
-                    <div className="admin-card">
+                    <Link href="/admin/settings" className="admin-card hover:bg-[var(--secondary)]/80 transition-colors block cursor-pointer">
                         <h3 className="text-xl font-semibold mb-4 text-[var(--accent)]">
-                            <i className="fas fa-user mr-2"></i>
-                            Profil
+                            <i className="fas fa-cog mr-2"></i>
+                            Paramètres
                         </h3>
-                        <p className="text-[var(--gray)] mb-4">Modifiez vos informations</p>
+                        <p className="text-[var(--gray)] mb-4">Gérez vos paramètres</p>
                         <div className="text-sm text-[var(--gray)] mb-4">
-                            Edition du profil sera implémentée ici
+                            Changer le mot de passe, modifier les coordonnées
                         </div>
-                    </div>
+                    </Link>
 
-                    <div className="admin-card">
+                    <Link href="/" className="admin-card hover:bg-[var(--secondary)]/80 transition-colors block cursor-pointer">
                         <h3 className="text-xl font-semibold mb-4 text-[var(--accent)]">
                             <i className="fas fa-home mr-2"></i>
                             Site Public
                         </h3>
                         <p className="text-[var(--gray)] mb-4">Retourner au site</p>
-                        <Link href="/" className="btn-primary inline-block mt-2">
-                            Voir le site
-                        </Link>
-                    </div>
-                </div>
-
-                <div className="admin-card">
-                    <h2 className="text-2xl font-bold mb-4">Instructions de Configuration</h2>
-                    <div className="space-y-4 text-sm">
-                        <div>
-                            <h3 className="font-semibold text-lg mb-2 text-[var(--accent)]">1. Configuration Backend (.env)</h3>
-                            <p className="text-[var(--gray)] mb-2">
-                                Créez un fichier <code className="bg-[var(--primary)] px-2 py-1 rounded">.env</code> dans le dossier <code className="bg-[var(--primary)] px-2 py-1 rounded">backend/</code> :
-                            </p>
-                            <ul className="list-disc pl-6 text-[var(--gray)] space-y-1">
-                                <li>MONGODB_URI - Votre chaîne de connexion MongoDB</li>
-                                <li>SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY</li>
-                                <li>JWT_SECRET - Une clé secrète pour les tokens JWT</li>
-                                <li>ADMIN_EMAIL et ADMIN_PASSWORD</li>
-                            </ul>
+                        <div className="text-sm text-[var(--gray)] mb-4">
+                            Voir le portfolio public
                         </div>
-
-                        <div>
-                            <h3 className="font-semibold text-lg mb-2 text-[var(--accent)]">2. Configuration Frontend (.env.local)</h3>
-                            <p className="text-[var(--gray)] mb-2">
-                                Créez un fichier <code className="bg-[var(--primary)] px-2 py-1 rounded">.env.local</code> dans le dossier <code className="bg-[var(--primary)] px-2 py-1 rounded">frontend/</code> :
-                            </p>
-                            <ul className="list-disc pl-6 text-[var(--gray)] space-y-1">
-                                <li>NEXT_PUBLIC_API_URL - URL de votre backend</li>
-                                <li>NEXT_PUBLIC_SUPABASE_URL et NEXT_PUBLIC_SUPABASE_ANON_KEY</li>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h3 className="font-semibold text-lg mb-2 text-[var(--accent)]">3. Configuration Supabase</h3>
-                            <p className="text-[var(--gray)] mb-2">
-                                Dans votre projet Supabase, créez deux buckets de stockage :
-                            </p>
-                            <ul className="list-disc pl-6 text-[var(--gray)] space-y-1">
-                                <li><strong>images</strong> - Public : pour les images de projets et de profil</li>
-                                <li><strong>certifications</strong> - Private : pour les fichiers de certifications</li>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h3 className="font-semibold text-lg mb-2 text-[var(--accent)]">4. Créer le compte Admin</h3>
-                            <p className="text-[var(--gray)]">
-                                Utilisez l&apos;endpoint <code className="bg-[var(--primary)] px-2 py-1 rounded">POST /api/auth/create-admin</code> pour créer votre compte admin initial.
-                            </p>
-                        </div>
-                    </div>
+                    </Link>
                 </div>
             </div>
         </div>

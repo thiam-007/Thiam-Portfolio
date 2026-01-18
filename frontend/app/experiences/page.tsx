@@ -69,7 +69,7 @@ function ExperienceCard({ experience: exp }: { experience: ExperienceType }) {
 
 export default function ExperiencesPage() {
     const { data: experiences, error } = useSWR<ExperienceType[]>(
-        `${API_URL}/api/experiences/public`,
+        `${API_URL}/api/experiences`,
         fetcher
     );
 

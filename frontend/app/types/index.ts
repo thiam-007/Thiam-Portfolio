@@ -59,6 +59,7 @@ export interface Certification {
     date?: string;
     description?: string;
     file_path: string;
+    cover_image?: string;
     tags?: string[];
     createdAt: string;
 }
