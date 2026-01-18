@@ -7,7 +7,7 @@ const profile = {
     name: 'Cheick Ahmed Thiam',
     title: 'Consultant en Stratégie & Développement de Projets | Développeur Full Stack',
     bio: 'Expert en pilotage de projets transversaux et analyse stratégique, diplômé en Entrepreneuriat. Je combine une rigueur méthodologique avec des compétences techniques pour concevoir des solutions innovantes.',
-    profileImageUrl: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+    profileImageUrl: '/IMG_1945.jpg',
     typingTexts: [
         'Consultant en Stratégie & Développement',
         'Développeur Full Stack',
@@ -93,7 +93,7 @@ export default function Hero() {
                                 <img
                                     src={profile.profileImageUrl}
                                     alt={profile.name}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover object-top"
                                 />
                             </div>
                         </div>
