@@ -25,8 +25,18 @@ export default function Footer() {
         <footer className="py-8 bg-[var(--secondary)] border-t border-[var(--accent)] border-opacity-20">
             <div className="container mx-auto px-6">
                 <div className="flex flex-col md:flex-row justify-between items-center">
-                    <div className="mb-6 md:mb-0">
-                        <p className="text-[var(--gray)]">&copy; 2025 Cheick Ahmed Thiam. Tous droits réservés.</p>
+                    <div className="mb-6 md:mb-0 text-center md:text-left">
+                        <p className="text-[var(--gray)]">
+                            &copy; 2026 Client X — Développé par{' '}
+                            <a
+                                href="https://votre-entreprise.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-[var(--accent)] hover:underline"
+                            >
+                                CAT Consulting
+                            </a>
+                        </p>
                     </div>
 
                     <div className="flex items-center space-x-6">
