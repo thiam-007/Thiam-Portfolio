@@ -82,7 +82,7 @@ export default function Certifications() {
                                 <div className="flex justify-between items-start mb-4">
                                     <div className="flex flex-wrap gap-2 mb-2">
                                         {cert.tags && cert.tags.map((tag, i) => (
-                                            <span key={i} className="bg-[var(--accent)] bg-opacity-20 text-[var(--accent)] rounded-full px-3 py-1 text-xs">
+                                            <span key={i} className="tag">
                                                 {tag}
                                             </span>
                                         ))}
@@ -168,7 +168,7 @@ export default function Certifications() {
                                 selectedCert.tags.map((tag, i) => (
                                     <span
                                         key={i}
-                                        className="bg-[var(--accent)] bg-opacity-20 text-[var(--accent)] rounded-full px-3 py-1 text-sm"
+                                        className="tag"
                                     >
                                         {tag}
                                     </span>

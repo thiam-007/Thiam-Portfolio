@@ -76,7 +76,7 @@ export default function Projects() {
                                 <p className="text-[var(--gray)] mb-4 line-clamp-3">{project.description}</p>
                                 <div className="flex flex-wrap gap-2 mb-4">
                                     {project.tech?.slice(0, 3).map((tag, i) => (
-                                        <span key={i} className="bg-[var(--primary)] rounded-full px-3 py-1 text-xs">
+                                        <span key={i} className="tag">
                                             {tag}
                                         </span>
                                     ))}
@@ -125,7 +125,7 @@ export default function Projects() {
                         <div className="flex flex-wrap gap-2 mb-6">
                             {selectedProject.tech && selectedProject.tech.length > 0 ? (
                                 selectedProject.tech.map((tag, i) => (
-                                    <span key={i} className="bg-[var(--accent)] bg-opacity-20 text-[var(--accent)] rounded-full px-3 py-1 text-sm">
+                                    <span key={i} className="tag">
                                         {tag}
                                     </span>
                                 ))

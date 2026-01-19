@@ -27,7 +27,7 @@ export default function Footer() {
                 <div className="flex flex-col md:flex-row justify-between items-center">
                     <div className="mb-6 md:mb-0 text-center md:text-left">
                         <p className="text-[var(--gray)]">
-                            &copy; 2026 Client X — Développé par{' '}
+                            &copy; 2026 — Développé par{' '}
                             <a
                                 href="https://votre-entreprise.com"
                                 target="_blank"

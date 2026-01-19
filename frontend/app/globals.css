@@ -94,6 +94,17 @@ h6 {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
+/* Tags */
+.tag {
+  background-color: rgba(204, 163, 84, 0.15);
+  color: var(--accent);
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
 /* Buttons */
 .btn-primary {
   background-color: transparent;

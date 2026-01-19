@@ -98,7 +98,7 @@ function ExperienceCard({ experience: exp }: { experience: ExperienceType }) {
                         {exp.tags.map((tag, i) => (
                             <span
                                 key={i}
-                                className="bg-[var(--accent)] bg-opacity-20 text-[var(--accent)] rounded-full px-3 py-1 text-xs"
+                                className="tag"
                             >
                                 {tag}
                             </span>
