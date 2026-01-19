@@ -80,11 +80,13 @@ export default function Certifications() {
                         >
                             <div className="p-6">
                                 <div className="flex justify-between items-start mb-4">
-                                    {cert.tags && cert.tags[0] && (
-                                        <span className="bg-[var(--accent)] bg-opacity-20 text-[var(--accent)] rounded-full px-3 py-1 text-xs">
-                                            {cert.tags[0]}
-                                        </span>
-                                    )}
+                                    <div className="flex flex-wrap gap-2 mb-2">
+                                        {cert.tags && cert.tags.map((tag, i) => (
+                                            <span key={i} className="bg-[var(--accent)] bg-opacity-20 text-[var(--accent)] rounded-full px-3 py-1 text-xs">
+                                                {tag}
+                                            </span>
+                                        ))}
+                                    </div>
                                     {cert.date && (
                                         <span className="text-[var(--gray)] text-sm">
                                             {new Date(cert.date).toLocaleDateString('fr-FR', {

@@ -24,13 +24,20 @@ router.post('/', async (req: Request, res: Response) => {
         await contact.save();
 
         // Envoyer email de notification à l'admin
-        const { sendContactNotification } = await import('../lib/email');
+        // Envoyer email de notification à l'admin
+        const { sendContactNotification, sendAutoReply } = await import('../lib/email');
         await sendContactNotification({
             name,
             email,
             subject,
             message,
             date: contact.createdAt || new Date(),
+        });
+
+        // Envoyer accusé de réception au visiteur
+        await sendAutoReply({
+            name,
+            email
         });
 
         res.status(201).json({
@@ -73,6 +80,27 @@ router.patch('/:id/read', authMiddleware, async (req: AuthRequest, res: Response
         res.json(message);
     } catch (error) {
         console.error('Mark as read error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Mark message as unread (admin only)
+router.patch('/:id/unread', authMiddleware, async (req: AuthRequest, res: Response) => {
+    try {
+        const message = await Contact.findByIdAndUpdate(
+            req.params.id,
+            { isRead: false },
+            { new: true }
+        ).select('-__v');
+
+        if (!message) {
+            res.status(404).json({ message: 'Message not found' });
+            return;
+        }
+
+        res.json(message);
+    } catch (error) {
+        console.error('Mark as unread error:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });

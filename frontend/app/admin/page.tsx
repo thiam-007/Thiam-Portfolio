@@ -76,16 +76,16 @@ export default function AdminDashboard() {
                         </div>
                     </Link>
 
-                    <div className="admin-card">
+                    <Link href="/admin/messages" className="admin-card hover:bg-[var(--secondary)]/80 transition-colors block cursor-pointer">
                         <h3 className="text-xl font-semibold mb-4 text-[var(--accent)]">
                             <i className="fas fa-envelope mr-2"></i>
                             Messages
                         </h3>
                         <p className="text-[var(--gray)] mb-4">Consultez les messages reçus</p>
                         <div className="text-sm text-[var(--gray)] mb-4">
-                            Liste des messages sera implémentée ici
+                            Lu / Non lu, répondre et supprimer
                         </div>
-                    </div>
+                    </Link>
 
                     <Link href="/admin/settings" className="admin-card hover:bg-[var(--secondary)]/80 transition-colors block cursor-pointer">
                         <h3 className="text-xl font-semibold mb-4 text-[var(--accent)]">

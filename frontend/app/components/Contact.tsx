@@ -65,9 +65,10 @@ export default function Contact() {
 
     // Profile data (can be fetched from API later)
     const profile = {
-        email: process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'contact@cheickthiam.com',
-        phone: '+33 6 00 00 00 00',
-        location: 'Paris, France',
+        email: process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'cheickahmedthiam07@gmail.com',
+        phone: '+216 589 758 04',
+        WhatsApp: '+224 627 479 896',
+        location: 'In remote',
     };
 
     return (
@@ -105,6 +106,23 @@ export default function Contact() {
                                     <p className="text-sm text-[var(--gray)]">Téléphone</p>
                                     <a href={`tel:${profile.phone.replace(/\s/g, '')}`} className="hover:text-[var(--accent)]">
                                         {profile.phone}
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center">
+                                <div className="w-12 h-12 rounded-full bg-[var(--secondary)] flex items-center justify-center mr-4">
+                                    <i className="fab fa-whatsapp text-[var(--accent)] text-xl"></i>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-[var(--gray)]">WhatsApp</p>
+                                    <a
+                                        href={`https://wa.me/${profile.WhatsApp.replace(/[\s+]/g, '')}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="hover:text-[var(--accent)]"
+                                    >
+                                        {profile.WhatsApp}
                                     </a>
                                 </div>
                             </div>

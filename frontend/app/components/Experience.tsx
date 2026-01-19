@@ -92,6 +92,20 @@ function ExperienceCard({ experience: exp }: { experience: ExperienceType }) {
                     <p className="text-[var(--text)] mb-4">{exp.description}</p>
                 )}
 
+                {/* Tags always visible */}
+                {exp.tags && exp.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-4">
+                        {exp.tags.map((tag, i) => (
+                            <span
+                                key={i}
+                                className="bg-[var(--accent)] bg-opacity-20 text-[var(--accent)] rounded-full px-3 py-1 text-xs"
+                            >
+                                {tag}
+                            </span>
+                        ))}
+                    </div>
+                )}
+
                 {exp.responsibilities && exp.responsibilities.length > 0 && (
                     <div className={isExpanded ? '' : 'hidden'}>
                         <ul className="list-disc pl-5 text-sm space-y-2 mb-4">
@@ -99,18 +113,6 @@ function ExperienceCard({ experience: exp }: { experience: ExperienceType }) {
                                 <li key={i}>{resp}</li>
                             ))}
                         </ul>
-                        {exp.tags && exp.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mt-4">
-                                {exp.tags.map((tag, i) => (
-                                    <span
-                                        key={i}
-                                        className="bg-[var(--accent)] bg-opacity-20 text-[var(--accent)] rounded-full px-3 py-1 text-xs"
-                                    >
-                                        {tag}
-                                    </span>
-                                ))}
-                            </div>
-                        )}
                     </div>
                 )}
 

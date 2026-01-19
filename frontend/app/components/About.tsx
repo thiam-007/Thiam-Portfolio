@@ -29,7 +29,7 @@ export default function About() {
                             <div>
                                 <h4 className="font-medium mb-3">Gestion de projet</h4>
                                 <div className="flex flex-wrap gap-2">
-                                    {['Jira', 'MS Project', 'PMP', 'Agile'].map((skill) => (
+                                    {['Jira', 'MS Project', 'PMP', 'Agile', 'Trello'].map((skill) => (
                                         <span key={skill} className="bg-[var(--secondary)] rounded-full px-3 py-1 text-sm">
                                             {skill}
                                         </span>
@@ -40,7 +40,7 @@ export default function About() {
                             <div>
                                 <h4 className="font-medium mb-3">Développement Web</h4>
                                 <div className="flex flex-wrap gap-2">
-                                    {['MERN', 'Node.js', 'React', 'Next.js'].map((skill) => (
+                                    {['MERN', 'Node.js/Express.js', 'React/Vite', 'Next.js', 'Python'].map((skill) => (
                                         <span key={skill} className="bg-[var(--secondary)] rounded-full px-3 py-1 text-sm">
                                             {skill}
                                         </span>
@@ -51,7 +51,7 @@ export default function About() {
                             <div>
                                 <h4 className="font-medium mb-3">Analyse de données</h4>
                                 <div className="flex flex-wrap gap-2">
-                                    {['Power BI', 'SQL', 'Python', 'MongoDB'].map((skill) => (
+                                    {['Power BI', 'SQL', 'MongoDB', 'Python'].map((skill) => (
                                         <span key={skill} className="bg-[var(--secondary)] rounded-full px-3 py-1 text-sm">
                                             {skill}
                                         </span>
@@ -62,7 +62,7 @@ export default function About() {
                             <div>
                                 <h4 className="font-medium mb-3">Soft Skills</h4>
                                 <div className="flex flex-wrap gap-2">
-                                    {['Leadership', 'Communication', 'Résolution de problèmes'].map((skill) => (
+                                    {['Leadership', 'Communication', 'Résolution de problèmes', 'Autonomie', 'Team Work'].map((skill) => (
                                         <span key={skill} className="bg-[var(--secondary)] rounded-full px-3 py-1 text-sm">
                                             {skill}
                                         </span>

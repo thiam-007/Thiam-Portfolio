@@ -70,7 +70,14 @@ export default function Hero() {
             <div className="container mx-auto px-6 z-10">
                 <div className="flex flex-col-reverse md:flex-row items-center justify-between">
                     <div className="w-full md:w-2/3 text-center md:text-left">
-                        <p className="text-[var(--accent)] mb-4 font-medium reveal">Bonjour, je m&apos;appelle</p>
+                        <p className="text-[var(--accent)] mb-4 font-medium reveal">
+                            {(() => {
+                                const hour = new Date().getHours();
+                                if (hour >= 0 && hour < 12) return "Bonjour, je m'appelle";
+                                if (hour >= 12 && hour < 14) return "Bon après-midi, je m'appelle";
+                                return "Bonsoir, je m'appelle";
+                            })()}
+                        </p>
                         <h1 className="text-4xl md:text-6xl font-bold mb-4 reveal">
                             {profile.name}
                         </h1>

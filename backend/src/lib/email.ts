@@ -1,8 +1,9 @@
 import * as SibApiV3Sdk from '@sendinblue/client';
 
 const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-const apiKey = apiInstance.authentications['apiKey'];
-apiKey.apiKey = process.env.BREVO_API_KEY || '';
+// Configure API key
+// @ts-ignore
+apiInstance.setApiKey(SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY || '');
 
 interface EmailOptions {
   to: string;
@@ -130,4 +131,65 @@ ${contactData.message}
   });
 };
 
-export default { sendEmail, sendContactNotification };
+// Template pour accusé de réception automatique
+export const sendAutoReply = async (contactData: {
+  name: string;
+  email: string;
+}): Promise<boolean> => {
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .logo { font-size: 24px; font-weight: bold; color: #cca354; text-decoration: none; }
+        .content { background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .h1 { color: #0a192f; margin-top: 0; }
+        .footer { margin-top: 30px; text-align: center; color: #888; font-size: 13px; }
+        .button { display: inline-block; background-color: #cca354; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 20px; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <a href="#" class="logo">Cheick Ahmed Thiam</a>
+        </div>
+        <div class="content">
+          <h1 class="h1">Merci pour votre message !</h1>
+          <p>Bonjour ${contactData.name},</p>
+          <p>J'ai bien reçu votre message via mon formulaire de contact. Je vous remercie de l'intérêt que vous portez à mon profil.</p>
+          <p>Je prendrai le temps de lire votre demande et je m'engage à vous répondre dans un délai de <strong>24 heures</strong>.</p>
+          <p>En attendant, n'hésitez pas à consulter mes derniers projets ou à me suivre sur LinkedIn.</p>
+          <br>
+          <p>Cordialement,<br><strong>Cheick Ahmed Thiam</strong></p>
+        </div>
+        <div class="footer">
+          <p>&copy; ${new Date().getFullYear()} Cheick Ahmed Thiam. Tous droits réservés.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const textContent = `
+Bonjour ${contactData.name},
+
+J'ai bien reçu votre message et je vous en remercie.
+
+Je m'engage à vous répondre dans un délai de 24 heures.
+
+Cordialement,
+Cheick Ahmed Thiam
+  `;
+
+  return sendEmail({
+    to: contactData.email,
+    subject: `Réception de votre message - Cheick Ahmed Thiam`,
+    htmlContent,
+    textContent,
+  });
+};
+
+export default { sendEmail, sendContactNotification, sendAutoReply };
