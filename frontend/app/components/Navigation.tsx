@@ -6,9 +6,21 @@ import Link from 'next/link';
 export default function Navigation() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(false);
-    const [isScrolled, setIsScrolled] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+    const [cvUrl, setCvUrl] = useState<string | null>(null);
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
     useEffect(() => {
+        // Fetch CV URL
+        fetch(`${API_URL}/api/profile`)
+            .then(res => res.ok ? res.json() : null)
+            .then(data => {
+                if (data && data.cvUrl) {
+                    setCvUrl(data.cvUrl);
+                }
+            })
+            .catch(err => console.error('Error fetching CV for nav:', err));
+
         // Check for saved dark mode preference
         const savedMode = localStorage.getItem('dark-mode');
         if (savedMode === 'enabled') {
@@ -18,7 +30,7 @@ export default function Navigation() {
 
         // Handle scroll
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 100);
+            setScrolled(window.scrollY > 100);
         };
 
         window.addEventListener('scroll', handleScroll);
@@ -40,7 +52,7 @@ export default function Navigation() {
 
     return (
         <nav
-            className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-[var(--primary)] bg-opacity-90 backdrop-blur-sm shadow-lg' : ''
+            className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-[var(--primary)] bg-opacity-90 backdrop-blur-sm shadow-lg' : ''
                 }`}
         >
             <div className="container mx-auto px-6 py-3 flex justify-between items-center">
@@ -55,6 +67,17 @@ export default function Navigation() {
                     <a href="#projects" className="nav-link">Projets</a>
                     <a href="#certifications" className="nav-link">Certifications</a>
                     <a href="#contact" className="nav-link">Contact</a>
+                    {cvUrl && (
+                        <a
+                            href={cvUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-4 py-2 rounded-md border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-[#0a192f] transition-all duration-300 flex items-center font-medium"
+                        >
+                            <i className="fas fa-file-pdf mr-2"></i>
+                            CV
+                        </a>
+                    )}
                     <button
                         onClick={toggleDarkMode}
                         className="p-2 rounded-full hover:bg-gray-700/20"
@@ -95,10 +118,21 @@ export default function Navigation() {
                         <a href="#contact" className="block py-2" onClick={() => setIsMobileMenuOpen(false)}>
                             Contact
                         </a>
-                        <button onClick={toggleDarkMode} className="p-2 flex items-center">
+                        {cvUrl && (
+                            <a
+                                href={cvUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block text-[var(--text-secondary)] hover:text-[var(--accent)] py-2 transition-colors flex items-center"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                                <i className="fas fa-file-pdf mr-2 w-5"></i> Mon CV
+                            </a>
+                        )}
+                        <a href="/admin/login" className="block text-[var(--text-secondary)] hover:text-[var(--accent)] py-2 transition-colors flex items-center">
                             <i className={`fas fa-${isDarkMode ? 'sun' : 'moon'} mr-2`}></i>
                             {isDarkMode ? 'Mode clair' : 'Mode sombre'}
-                        </button>
+                        </a>
                     </div>
                 </div>
             )}

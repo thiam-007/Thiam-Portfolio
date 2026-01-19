@@ -26,6 +26,9 @@ export default function AdminSettings() {
         confirmPassword: ''
     });
 
+    const [cvUrl, setCvUrl] = useState<string | null>(null);
+    const [cvFile, setCvFile] = useState<File | null>(null);
+
     useEffect(() => {
         const token = localStorage.getItem('admin_token');
         if (!token) {
@@ -141,6 +144,41 @@ export default function AdminSettings() {
         setSaving(false);
     };
 
+    // ... existing code ...
+
+    const handleCVSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!cvFile) return;
+
+        setSaving(true);
+        const formData = new FormData();
+        formData.append('cv', cvFile);
+
+        try {
+            const token = localStorage.getItem('admin_token');
+            const res = await fetch(`${API_URL}/api/profile/cv`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                setCvUrl(data.cvUrl);
+                setCvFile(null);
+                toast.success('CV mis à jour avec succès');
+            } else {
+                toast.error('Erreur lors de l\'upload du CV');
+            }
+        } catch (error) {
+            console.error('Error uploading CV:', error);
+            toast.error('Erreur lors de l\'upload');
+        }
+        setSaving(false);
+    };
+
     if (loading) {
         return (
             <div className="min-h-screen bg-[var(--primary)] flex items-center justify-center">
@@ -167,8 +205,8 @@ export default function AdminSettings() {
                     <button
                         onClick={() => setActiveTab('profile')}
                         className={`px-4 py-2 rounded-lg transition-colors ${activeTab === 'profile'
-                                ? 'bg-[var(--accent)] text-white'
-                                : 'bg-[var(--secondary)] text-[var(--gray)] hover:text-white'
+                            ? 'bg-[var(--accent)] text-white'
+                            : 'bg-[var(--secondary)] text-[var(--gray)] hover:text-white'
                             }`}
                     >
                         <i className="fas fa-user mr-2"></i>
@@ -177,12 +215,22 @@ export default function AdminSettings() {
                     <button
                         onClick={() => setActiveTab('password')}
                         className={`px-4 py-2 rounded-lg transition-colors ${activeTab === 'password'
-                                ? 'bg-[var(--accent)] text-white'
-                                : 'bg-[var(--secondary)] text-[var(--gray)] hover:text-white'
+                            ? 'bg-[var(--accent)] text-white'
+                            : 'bg-[var(--secondary)] text-[var(--gray)] hover:text-white'
                             }`}
                     >
                         <i className="fas fa-lock mr-2"></i>
                         Mot de passe
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('documents')}
+                        className={`px-4 py-2 rounded-lg transition-colors ${activeTab === 'documents'
+                            ? 'bg-[var(--accent)] text-white'
+                            : 'bg-[var(--secondary)] text-[var(--gray)] hover:text-white'
+                            }`}
+                    >
+                        <i className="fas fa-file-alt mr-2"></i>
+                        CV
                     </button>
                 </div>
 
@@ -268,6 +316,62 @@ export default function AdminSettings() {
                                     disabled={saving}
                                 >
                                     {saving ? 'Changement...' : 'Changer le mot de passe'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                )}
+                {/* Documents Tab */}
+                {activeTab === 'documents' && (
+                    <div className="bg-[var(--secondary)] p-6 rounded-lg">
+                        <h2 className="text-xl font-bold mb-6">Gérer le CV</h2>
+                        <form onSubmit={handleCVSubmit} className="space-y-6">
+                            <div>
+                                <label className="block mb-2 text-sm text-[var(--gray)]">CV Actuel</label>
+                                {cvUrl ? (
+                                    <div className="flex items-center gap-4 bg-[var(--primary)] p-4 rounded-lg">
+                                        <i className="fas fa-file-pdf text-[var(--accent)] text-2xl"></i>
+                                        <div className="flex-1 overflow-hidden">
+                                            <a
+                                                href={cvUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-[var(--accent)] hover:underline truncate block"
+                                            >
+                                                Voir le CV actuel
+                                            </a>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <p className="text-[var(--gray)] italic">Aucun CV n'a été uploadé.</p>
+                                )}
+                            </div>
+
+                            <div>
+                                <label className="block mb-2 text-sm text-[var(--gray)]">Uploader un nouveau CV (PDF)</label>
+                                <div className="border-2 border-dashed border-[var(--gray)] rounded-lg p-8 text-center hover:border-[var(--accent)] transition-colors cursor-pointer relative">
+                                    <input
+                                        type="file"
+                                        accept=".pdf"
+                                        onChange={(e) => setCvFile(e.target.files ? e.target.files[0] : null)}
+                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                    />
+                                    <i className="fas fa-cloud-upload-alt text-3xl mb-2 text-[var(--gray)]"></i>
+                                    {cvFile ? (
+                                        <p className="text-[var(--accent)] font-medium">{cvFile.name}</p>
+                                    ) : (
+                                        <p className="text-[var(--gray)]">Cliquez ou glissez-déposez votre fichier ici</p>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="flex justify-end pt-4">
+                                <button
+                                    type="submit"
+                                    className="btn-primary"
+                                    disabled={saving || !cvFile}
+                                >
+                                    {saving ? 'Envoi en cours...' : 'Mettre à jour le CV'}
                                 </button>
                             </div>
                         </form>

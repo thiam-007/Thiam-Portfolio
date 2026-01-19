@@ -23,6 +23,20 @@ export default function Hero() {
     const [isDeleting, setIsDeleting] = useState(false);
 
     const texts = profile.typingTexts;
+    const [cvUrl, setCvUrl] = useState<string | null>(null);
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
+    useEffect(() => {
+        // Fetch dynamic profile data including CV
+        fetch(`${API_URL}/api/profile`)
+            .then(res => res.ok ? res.json() : null)
+            .then(data => {
+                if (data && data.cvUrl) {
+                    setCvUrl(data.cvUrl);
+                }
+            })
+            .catch(err => console.error('Error fetching profile:', err));
+    }, []);
 
     useEffect(() => {
         const typeSpeed = isDeleting ? 50 : 100;
@@ -90,6 +104,17 @@ export default function Hero() {
                         <div className="flex flex-wrap gap-4 justify-center md:justify-start reveal">
                             <a href="#contact" className="btn-primary">Me contacter</a>
                             <a href="#projects" className="btn-primary">Voir mes projets</a>
+                            {cvUrl && (
+                                <a
+                                    href={cvUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn-outline flex items-center"
+                                >
+                                    <i className="fas fa-file-pdf mr-2"></i>
+                                    CV
+                                </a>
+                            )}
                         </div>
                     </div>
 

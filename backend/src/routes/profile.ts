@@ -110,4 +110,64 @@ router.post(
     }
 );
 
+// Upload CV (admin only)
+router.post(
+    '/cv',
+    authMiddleware,
+    upload.single('cv'),
+    async (req: AuthRequest, res: Response) => {
+        try {
+            if (!req.file) {
+                res.status(400).json({ message: 'CV file is required' });
+                return;
+            }
+
+            if (req.file.mimetype !== 'application/pdf') {
+                res.status(400).json({ message: 'Only PDF files are allowed' });
+                return;
+            }
+
+            if (!supabaseAdmin) {
+                res.status(500).json({ message: 'Storage not configured' });
+                return;
+            }
+
+            // Upload CV to Supabase (using 'images' bucket but inside 'documents' folder if possible, or just 'cv')
+            const fileName = `cv-${Date.now()}.pdf`;
+            const { data, error } = await supabaseAdmin.storage
+                .from('images') // Reusing images bucket as it's likely the only one configured/public. Ideally should be 'documents'
+                .upload(`cv/${fileName}`, req.file.buffer, {
+                    contentType: 'application/pdf',
+                    upsert: true,
+                });
+
+            if (error) {
+                console.error('Supabase CV upload error:', error);
+                res.status(500).json({ message: 'CV upload failed' });
+                return;
+            }
+
+            // Get public URL
+            const { data: urlData } = supabaseAdmin.storage
+                .from('images')
+                .getPublicUrl(data.path);
+
+            // Update profile with new CV URL using findOneAndUpdate to avoid validation errors on other fields
+            const profile = await Profile.findOneAndUpdate(
+                {},
+                { $set: { cvUrl: urlData.publicUrl } },
+                { new: true, upsert: true, setDefaultsOnInsert: true }
+            );
+
+            res.json({
+                message: 'CV updated successfully',
+                cvUrl: profile.cvUrl,
+            });
+        } catch (error) {
+            console.error('Update CV error:', error);
+            res.status(500).json({ message: 'Server error' });
+        }
+    }
+);
+
 export default router;
