@@ -11,9 +11,53 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-    title: 'Cheick Ahmed Thiam - Consultant & Développeur Full Stack',
+    title: {
+        default: 'Cheick Ahmed Thiam - Consultant & Développeur Full Stack',
+        template: '%s | Cheick Ahmed Thiam'
+    },
     description: 'Expert en pilotage de projets transversaux et analyse stratégique, diplômé en Entrepreneuriat. Consultant et Développeur Full Stack.',
-    keywords: ['Consultant', 'Développeur Full Stack', 'MERN', 'Gestion de Projet', 'Entrepreneuriat', 'Analyse Stratégique', 'Design'],
+    keywords: ['Consultant', 'Développeur Full Stack', 'MERN', 'Gestion de Projet', 'Entrepreneuriat', 'Analyse Stratégique', 'Design', 'Next.js', 'React', 'Node.js'],
+    authors: [{ name: 'Cheick Ahmed Thiam' }],
+    creator: 'Cheick Ahmed Thiam',
+    metadataBase: new URL('https://thiam-portfolio.vercel.app'), // Replace with actual domain if different
+    openGraph: {
+        title: 'Cheick Ahmed Thiam - Consultant & Développeur Full Stack',
+        description: 'Solutions innovantes en stratégie et développement web.',
+        url: 'https://thiam-portfolio.vercel.app',
+        siteName: 'Cheick Ahmed Thiam Portfolio',
+        images: [
+            {
+                url: '/opengraph-image.jpg', // Ensure this image exists in public folder
+                width: 1200,
+                height: 630,
+                alt: 'Cheick Ahmed Thiam Portfolio',
+            },
+        ],
+        locale: 'fr_FR',
+        type: 'website',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Cheick Ahmed Thiam - Consultant & Développeur Full Stack',
+        description: 'Solutions innovantes en stratégie et développement web.',
+        creator: '@cheick_thiam', // Replace with actual handle if available
+        images: ['/twitter-image.jpg'], // Ensure this image exists
+    },
+    robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            'max-video-preview': -1,
+            'max-image-preview': 'large',
+            'max-snippet': -1,
+        },
+    },
+    icons: {
+        icon: '/favicon.ico',
+        // apple: '/apple-icon.png', // Add if available
+    },
 };
 
 export default function RootLayout({

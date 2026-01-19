@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, FormEvent } from 'react';
 import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -13,22 +14,6 @@ export default function Contact() {
         message: '',
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    useEffect(() => {
-        const revealElements = () => {
-            const elements = document.querySelectorAll('.reveal');
-            elements.forEach((el) => {
-                const rect = el.getBoundingClientRect();
-                if (rect.top < window.innerHeight - 150) {
-                    el.classList.add('active');
-                }
-            });
-        };
-
-        revealElements();
-        window.addEventListener('scroll', revealElements);
-        return () => window.removeEventListener('scroll', revealElements);
-    }, []);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -74,12 +59,23 @@ export default function Contact() {
     return (
         <section id="contact" className="py-20 bg-[var(--primary)]">
             <div className="container mx-auto px-6">
-                <h2 className="text-3xl font-bold mb-12 text-center reveal">
+                <motion.h2
+                    className="text-3xl font-bold mb-12 text-center"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5 }}
+                >
                     <span className="text-[var(--accent)]">#</span> Me contacter
-                </h2>
+                </motion.h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                    <div className="reveal">
+                    <motion.div
+                        initial={{ opacity: 0, x: -50 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                    >
                         <h3 className="text-2xl font-semibold mb-6">Parlons de votre projet</h3>
                         <p className="text-[var(--gray)] mb-8">
                             Vous avez un projet qui nécessite un regard stratégique et des compétences techniques ? N&apos;hésitez pas à me contacter pour discuter de vos besoins.
@@ -139,20 +135,41 @@ export default function Contact() {
                         </div>
 
                         <div className="flex space-x-4 mt-8">
-                            <a href="#" className="w-10 h-10 rounded-full bg-[var(--secondary)] flex items-center justify-center hover:bg-[var(--accent)] transition-colors duration-300">
-                                <i className="fab fa-linkedin-in"></i>
-                            </a>
-                            <a href="#" className="w-10 h-10 rounded-full bg-[var(--secondary)] flex items-center justify-center hover:bg-[var(--accent)] transition-colors duration-300">
-                                <i className="fab fa-github"></i>
-                            </a>
-                            <a href="#" className="w-10 h-10 rounded-full bg-[var(--secondary)] flex items-center justify-center hover:bg-[var(--accent)] transition-colors duration-300">
-                                <i className="fab fa-facebook"></i>
-                            </a>
+                            <motion.a
+                                href="#"
+                                whileHover={{ scale: 1.1 }}
+                                className="w-10 h-10 rounded-full bg-[var(--secondary)] flex items-center justify-center hover:bg-[var(--accent)] transition-colors duration-300"
+                                aria-label="LinkedIn Profile"
+                            >
+                                <i className="fab fa-linkedin-in" aria-hidden="true"></i>
+                            </motion.a>
+                            <motion.a
+                                href="#"
+                                whileHover={{ scale: 1.1 }}
+                                className="w-10 h-10 rounded-full bg-[var(--secondary)] flex items-center justify-center hover:bg-[var(--accent)] transition-colors duration-300"
+                                aria-label="GitHub Profile"
+                            >
+                                <i className="fab fa-github" aria-hidden="true"></i>
+                            </motion.a>
+                            <motion.a
+                                href="#"
+                                whileHover={{ scale: 1.1 }}
+                                className="w-10 h-10 rounded-full bg-[var(--secondary)] flex items-center justify-center hover:bg-[var(--accent)] transition-colors duration-300"
+                                aria-label="Facebook Profile"
+                            >
+                                <i className="fab fa-facebook" aria-hidden="true"></i>
+                            </motion.a>
                         </div>
-                    </div>
+                    </motion.div>
 
-                    <div className="bg-[var(--secondary)] p-8 rounded-lg shadow-lg reveal">
-                        <form onSubmit={handleSubmit} className="space-y-6">
+                    <motion.div
+                        className="bg-[var(--secondary)] p-8 rounded-lg shadow-lg"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: 0.4 }}
+                    >
+                        <form onSubmit={handleSubmit} className="space-y-6" aria-label="Contact Form">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div>
                                     <label htmlFor="name" className="block mb-2 text-sm font-medium">
@@ -165,6 +182,7 @@ export default function Contact() {
                                         onChange={handleChange}
                                         className="w-full p-3 bg-[var(--primary)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] outline-none"
                                         required
+                                        aria-required="true"
                                     />
                                 </div>
                                 <div>
@@ -178,6 +196,7 @@ export default function Contact() {
                                         onChange={handleChange}
                                         className="w-full p-3 bg-[var(--primary)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] outline-none"
                                         required
+                                        aria-required="true"
                                     />
                                 </div>
                             </div>
@@ -193,6 +212,7 @@ export default function Contact() {
                                     onChange={handleChange}
                                     className="w-full p-3 bg-[var(--primary)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] outline-none"
                                     required
+                                    aria-required="true"
                                 />
                             </div>
 
@@ -207,27 +227,31 @@ export default function Contact() {
                                     onChange={handleChange}
                                     className="w-full p-3 bg-[var(--primary)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] outline-none resize-none"
                                     required
+                                    aria-required="true"
                                 ></textarea>
                             </div>
 
                             <div>
-                                <button
+                                <motion.button
                                     type="submit"
                                     disabled={isSubmitting}
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
                                     className="btn-primary w-full flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                                    aria-busy={isSubmitting}
                                 >
                                     {isSubmitting ? (
                                         <>
-                                            <div className="spinner mr-3"></div>
+                                            <div className="spinner mr-3" aria-hidden="true"></div>
                                             Envoi en cours...
                                         </>
                                     ) : (
                                         <span>Envoyer le message</span>
                                     )}
-                                </button>
+                                </motion.button>
                             </div>
                         </form>
-                    </div>
+                    </motion.div>
                 </div>
             </div>
         </section>

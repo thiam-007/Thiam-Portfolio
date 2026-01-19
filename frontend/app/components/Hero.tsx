@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 // Profil statique de Portfolio.html
 const profile = {
@@ -59,22 +60,6 @@ export default function Hero() {
         return () => clearTimeout(timer);
     }, [charIndex, isDeleting, textIndex, texts]);
 
-    useEffect(() => {
-        const revealElements = () => {
-            const elements = document.querySelectorAll('.reveal');
-            elements.forEach((el) => {
-                const rect = el.getBoundingClientRect();
-                if (rect.top < window.innerHeight - 150) {
-                    el.classList.add('active');
-                }
-            });
-        };
-
-        revealElements();
-        window.addEventListener('scroll', revealElements);
-        return () => window.removeEventListener('scroll', revealElements);
-    }, []);
-
     return (
         <section id="hero" className="h-screen flex items-center justify-center relative overflow-hidden">
             <div className="absolute inset-0 z-0">
@@ -83,25 +68,55 @@ export default function Hero() {
 
             <div className="container mx-auto px-6 z-10">
                 <div className="flex flex-col-reverse md:flex-row items-center justify-between">
-                    <div className="w-full md:w-2/3 text-center md:text-left">
-                        <p className="text-[var(--accent)] mb-4 font-medium reveal">
+                    <motion.div
+                        className="w-full md:w-2/3 text-center md:text-left"
+                        initial={{ opacity: 0, x: -50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                    >
+                        <motion.p
+                            className="text-[var(--accent)] mb-4 font-medium"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2, duration: 0.5 }}
+                        >
                             {(() => {
                                 const hour = new Date().getHours();
                                 if (hour >= 0 && hour < 12) return "Bonjour, je m'appelle";
                                 if (hour >= 12 && hour < 14) return "Bon après-midi, je m'appelle";
                                 return "Bonsoir, je m'appelle";
                             })()}
-                        </p>
-                        <h1 className="text-4xl md:text-6xl font-bold mb-4 reveal">
+                        </motion.p>
+                        <motion.h1
+                            className="text-4xl md:text-6xl font-bold mb-4"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.4, duration: 0.5 }}
+                        >
                             {profile.name}
-                        </h1>
-                        <h2 className="text-2xl md:text-4xl font-semibold text-[var(--gray)] mb-6 reveal">
+                        </motion.h1>
+                        <motion.h2
+                            className="text-2xl md:text-4xl font-semibold text-[var(--gray)] mb-6"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.6, duration: 0.5 }}
+                        >
                             {typingText}<span className="typing-cursor">|</span>
-                        </h2>
-                        <p className="text-lg text-[var(--gray)] max-w-xl mb-8 reveal">
+                        </motion.h2>
+                        <motion.p
+                            className="text-lg text-[var(--gray)] max-w-xl mb-8"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.8, duration: 0.5 }}
+                        >
                             {profile.bio}
-                        </p>
-                        <div className="flex flex-wrap gap-4 justify-center md:justify-start reveal">
+                        </motion.p>
+                        <motion.div
+                            className="flex flex-wrap gap-4 justify-center md:justify-start"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 1.0, duration: 0.5 }}
+                        >
                             <a href="#contact" className="btn-primary">Me contacter</a>
                             <a href="#projects" className="btn-primary">Voir mes projets</a>
                             {cvUrl && (
@@ -115,12 +130,21 @@ export default function Hero() {
                                     CV
                                 </a>
                             )}
-                        </div>
-                    </div>
+                        </motion.div>
+                    </motion.div>
 
-                    <div className="w-full md:w-1/3 flex justify-center mb-8 md:mb-0">
-                        <div className="w-64 h-64 relative reveal">
-                            <div className="absolute inset-0 rounded-full border-2 border-[var(--accent)] animate-ping opacity-20"></div>
+                    <motion.div
+                        className="w-full md:w-1/3 flex justify-center mb-8 md:mb-0"
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.5, duration: 0.8 }}
+                    >
+                        <div className="w-64 h-64 relative">
+                            <motion.div
+                                className="absolute inset-0 rounded-full border-2 border-[var(--accent)]"
+                                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
+                                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                            ></motion.div>
                             <div className="w-full h-full rounded-full overflow-hidden border-4 border-[var(--accent)]">
                                 <img
                                     src={profile.profileImageUrl}
@@ -129,15 +153,19 @@ export default function Hero() {
                                 />
                             </div>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
             </div>
 
-            <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <motion.div
+                className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
+                animate={{ y: [0, 10, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            >
                 <a href="#about" className="text-[var(--accent)]">
                     <i className="fas fa-chevron-down"></i>
                 </a>
-            </div>
+            </motion.div>
         </section>
     );
 }

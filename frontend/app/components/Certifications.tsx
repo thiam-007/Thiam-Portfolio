@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import useSWR from 'swr';
 import type { Certification as CertificationType } from '../types';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -20,43 +21,39 @@ export default function Certifications() {
         fetcher
     );
 
-    useEffect(() => {
-        const revealElements = () => {
-            const elements = document.querySelectorAll('.reveal');
-            elements.forEach((el) => {
-                const rect = el.getBoundingClientRect();
-                if (rect.top < window.innerHeight - 150) {
-                    el.classList.add('active');
-                }
-            });
-        };
+    const displayCerts = certifications || [];
 
-        revealElements();
-        window.addEventListener('scroll', revealElements);
-        return () => window.removeEventListener('scroll', revealElements);
-    }, []);
-
-    const handleDownload = async (certId: string, title: string) => {
-        try {
-            const response = await fetch(`${API_URL}/api/certifications/${certId}/download`);
-            if (!response.ok) throw new Error('Download failed');
-
-            const data = await response.json();
-            window.open(data.url, '_blank');
-            toast.success('Téléchargement démarré');
-        } catch (error) {
-            toast.error('Erreur lors du téléchargement');
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1
+            }
         }
     };
 
-    const displayCerts = certifications || [];
+    const itemVariants = {
+        hidden: { opacity: 0, scale: 0.9 },
+        visible: {
+            opacity: 1,
+            scale: 1,
+            transition: { duration: 0.5 }
+        }
+    };
 
     return (
         <section id="certifications" className="py-20 bg-[var(--secondary)]">
             <div className="container mx-auto px-6">
-                <h2 className="text-3xl font-bold mb-12 text-center reveal">
+                <motion.h2
+                    className="text-3xl font-bold mb-12 text-center"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5 }}
+                >
                     <span className="text-[var(--accent)]">#</span> Certifications
-                </h2>
+                </motion.h2>
 
                 {error && (
                     <div className="text-center text-red-500 mb-8">
@@ -71,11 +68,19 @@ export default function Certifications() {
                     </div>
                 )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <motion.div
+                    className="grid grid-cols-1 md:grid-cols-2 gap-8"
+                    variants={containerVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-50px" }}
+                >
                     {displayCerts.slice(0, 4).map((cert) => (
-                        <div
+                        <motion.div
                             key={cert._id}
-                            className="bg-[var(--primary)] rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl reveal cursor-pointer"
+                            className="bg-[var(--primary)] rounded-lg overflow-hidden shadow-lg cursor-pointer"
+                            variants={itemVariants}
+                            whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
                             onClick={() => setSelectedCert(cert)}
                         >
                             <div className="p-6">
@@ -108,90 +113,111 @@ export default function Certifications() {
                                     <i className="fas fa-arrow-right ml-2"></i>
                                 </button>
                             </div>
-                        </div>
+                        </motion.div>
                     ))}
-                </div>
+                </motion.div>
 
                 {displayCerts.length > 4 && (
-                    <div className="text-center mt-12 reveal">
+                    <motion.div
+                        className="text-center mt-12"
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                    >
                         <Link href="/certifications" className="btn-primary inline-block">
                             Toutes les certifications
                         </Link>
-                    </div>
+                    </motion.div>
                 )}
             </div>
 
             {/* Certification Modal */}
-            {selectedCert && (
-                <div className={`modal active`} onClick={() => setSelectedCert(null)}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex justify-between items-start mb-6">
-                            <div>
-                                <h3 className="text-2xl font-bold mb-2">{selectedCert.title}</h3>
-                                {selectedCert.issuer && (
-                                    <p className="text-[var(--accent)]">{selectedCert.issuer}</p>
-                                )}
-                                {selectedCert.date && (
-                                    <p className="text-[var(--gray)] text-sm">
-                                        {new Date(selectedCert.date).toLocaleDateString('fr-FR', {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric'
-                                        })}
-                                    </p>
-                                )}
+            <AnimatePresence>
+                {selectedCert && (
+                    <motion.div
+                        className="modal active"
+                        onClick={() => setSelectedCert(null)}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        <motion.div
+                            className="modal-content"
+                            onClick={(e) => e.stopPropagation()}
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            transition={{ duration: 0.3, type: "spring", stiffness: 300, damping: 25 }}
+                        >
+                            <div className="flex justify-between items-start mb-6">
+                                <div>
+                                    <h3 className="text-2xl font-bold mb-2">{selectedCert.title}</h3>
+                                    {selectedCert.issuer && (
+                                        <p className="text-[var(--accent)]">{selectedCert.issuer}</p>
+                                    )}
+                                    {selectedCert.date && (
+                                        <p className="text-[var(--gray)] text-sm">
+                                            {new Date(selectedCert.date).toLocaleDateString('fr-FR', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric'
+                                            })}
+                                        </p>
+                                    )}
 
-                                {selectedCert.cover_image && (
-                                    <div className="mt-4 mb-4">
-                                        <img
-                                            src={selectedCert.cover_image}
-                                            alt={selectedCert.title}
-                                            className="w-full h-48 object-cover rounded-lg"
-                                        />
-                                    </div>
+                                    {selectedCert.cover_image && (
+                                        <div className="mt-4 mb-4">
+                                            <img
+                                                src={selectedCert.cover_image}
+                                                alt={selectedCert.title}
+                                                className="w-full h-48 object-cover rounded-lg"
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                                <button
+                                    onClick={() => setSelectedCert(null)}
+                                    className="text-2xl hover:text-[var(--accent)] self-start"
+                                >
+                                    &times;
+                                </button>
+                            </div>
+
+                            <div className="mb-6">
+                                <p className="whitespace-pre-wrap">{selectedCert.description}</p>
+                            </div>
+
+                            <div className="flex flex-wrap gap-2 mb-6">
+                                {selectedCert.tags && selectedCert.tags.length > 0 ? (
+                                    selectedCert.tags.map((tag, i) => (
+                                        <span
+                                            key={i}
+                                            className="tag"
+                                        >
+                                            {tag}
+                                        </span>
+                                    ))
+                                ) : (
+                                    <span className="text-[var(--gray)] text-sm italic">Aucun tag spécifié</span>
                                 )}
                             </div>
-                            <button
-                                onClick={() => setSelectedCert(null)}
-                                className="text-2xl hover:text-[var(--accent)] self-start"
-                            >
-                                &times;
-                            </button>
-                        </div>
 
-                        <div className="mb-6">
-                            <p className="whitespace-pre-wrap">{selectedCert.description}</p>
-                        </div>
-
-                        <div className="flex flex-wrap gap-2 mb-6">
-                            {selectedCert.tags && selectedCert.tags.length > 0 ? (
-                                selectedCert.tags.map((tag, i) => (
-                                    <span
-                                        key={i}
-                                        className="tag"
-                                    >
-                                        {tag}
-                                    </span>
-                                ))
-                            ) : (
-                                <span className="text-[var(--gray)] text-sm italic">Aucun tag spécifié</span>
+                            {selectedCert.file_path && (
+                                <a
+                                    href={`${API_URL}/api/certifications/${selectedCert._id}/download`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn-primary inline-flex items-center"
+                                >
+                                    <i className="fas fa-eye mr-2"></i>
+                                    Voir la certification
+                                </a>
                             )}
-                        </div>
-
-                        {selectedCert.file_path && (
-                            <a
-                                href={`${API_URL}/api/certifications/${selectedCert._id}/download`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn-primary inline-flex items-center"
-                            >
-                                <i className="fas fa-eye mr-2"></i>
-                                Voir la certification
-                            </a>
-                        )}
-                    </div>
-                </div>
-            )}
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </section>
     );
 }

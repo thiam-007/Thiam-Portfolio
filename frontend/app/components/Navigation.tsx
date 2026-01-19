@@ -54,9 +54,11 @@ export default function Navigation() {
         <nav
             className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-[var(--primary)] bg-opacity-90 backdrop-blur-sm shadow-lg' : ''
                 }`}
+            role="navigation"
+            aria-label="Main Navigation"
         >
             <div className="container mx-auto px-6 py-3 flex justify-between items-center">
-                <Link href="/" className="text-2xl font-bold">
+                <Link href="/" className="text-2xl font-bold" aria-label="Home">
                     <span className="text-[var(--accent)]">Cheick </span>Ahmed <span className="text-[var(--accent)]">Thiam</span>
                 </Link>
 
@@ -73,17 +75,18 @@ export default function Navigation() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="px-4 py-2 rounded-md border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-[#0a192f] transition-all duration-300 flex items-center font-medium"
+                            aria-label="Download CV"
                         >
-                            <i className="fas fa-file-pdf mr-2"></i>
+                            <i className="fas fa-file-pdf mr-2" aria-hidden="true"></i>
                             CV
                         </a>
                     )}
                     <button
                         onClick={toggleDarkMode}
                         className="p-2 rounded-full hover:bg-gray-700/20"
-                        aria-label="Toggle dark mode"
+                        aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
                     >
-                        <i className={`fas fa-${isDarkMode ? 'sun' : 'moon'}`}></i>
+                        <i className={`fas fa-${isDarkMode ? 'sun' : 'moon'}`} aria-hidden="true"></i>
                     </button>
                 </div>
 
@@ -92,9 +95,10 @@ export default function Navigation() {
                     <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                         className="focus:outline-none"
-                        aria-label="Toggle mobile menu"
+                        aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+                        aria-expanded={isMobileMenuOpen}
                     >
-                        <i className="fas fa-bars text-2xl"></i>
+                        <i className="fas fa-bars text-2xl" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
@@ -125,14 +129,21 @@ export default function Navigation() {
                                 rel="noopener noreferrer"
                                 className="block text-[var(--text-secondary)] hover:text-[var(--accent)] py-2 transition-colors flex items-center"
                                 onClick={() => setIsMobileMenuOpen(false)}
+                                aria-label="Download CV"
                             >
-                                <i className="fas fa-file-pdf mr-2 w-5"></i> Mon CV
+                                <i className="fas fa-file-pdf mr-2 w-5" aria-hidden="true"></i> Mon CV
                             </a>
                         )}
-                        <a href="/admin/login" className="block text-[var(--text-secondary)] hover:text-[var(--accent)] py-2 transition-colors flex items-center">
-                            <i className={`fas fa-${isDarkMode ? 'sun' : 'moon'} mr-2`}></i>
+                        <button
+                            onClick={() => {
+                                toggleDarkMode();
+                                setIsMobileMenuOpen(false);
+                            }}
+                            className="block text-[var(--text-secondary)] hover:text-[var(--accent)] py-2 transition-colors flex items-center w-full text-left"
+                        >
+                            <i className={`fas fa-${isDarkMode ? 'sun' : 'moon'} mr-2`} aria-hidden="true"></i>
                             {isDarkMode ? 'Mode clair' : 'Mode sombre'}
-                        </a>
+                        </button>
                     </div>
                 </div>
             )}

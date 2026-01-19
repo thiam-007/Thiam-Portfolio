@@ -1,11 +1,21 @@
 import express, { Request, Response } from 'express';
 import Contact from '../models/Contact';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
+import rateLimit from 'express-rate-limit';
 
 const router = express.Router();
 
+// Strict Rate Limiter for Contact (3 emails per hour)
+const contactLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 3,
+    message: 'Too many messages sent from this IP, please try again after an hour',
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
 // Submit contact form (public)
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', contactLimiter, async (req: Request, res: Response) => {
     try {
         const { name, email, subject, message } = req.body;
 

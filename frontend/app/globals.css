@@ -46,16 +46,7 @@ h6 {
 }
 
 /* Reveal Animations */
-.reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.5s ease;
-}
-
-.reveal.active {
-  opacity: 1;
-  transform: translateY(0);
-}
+/* Reveal Animations - REMOVED (Replaced by Framer Motion) */
 
 /* Timeline Styles */
 .timeline-item {
@@ -191,13 +182,13 @@ h6 {
   align-items: center;
   justify-content: center;
   z-index: 50;
-  opacity: 0;
+  /* Opacity controlled by Framer Motion */
+  /* transition: opacity 0.3s ease; -- REMOVED */
   pointer-events: none;
-  transition: opacity 0.3s ease;
 }
 
 .modal.active {
-  opacity: 1;
+  /* opacity: 1; -- Controlled by Framer Motion */
   pointer-events: all;
 }
 
@@ -209,13 +200,13 @@ h6 {
   max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
-  transform: translateY(20px);
-  transition: transform 0.3s ease;
+  /* Transform controlled by Framer Motion */
+  /* transition: transform 0.3s ease; -- REMOVED */
 }
 
-.modal.active .modal-content {
+/* .modal.active .modal-content {
   transform: translateY(0);
-}
+} -- REMOVED */
 
 /* Typing Cursor Animation */
 .typing-cursor {

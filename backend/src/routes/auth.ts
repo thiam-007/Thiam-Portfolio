@@ -3,11 +3,21 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Admin from '../models/Admin';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
+import rateLimit from 'express-rate-limit';
 
 const router = express.Router();
 
+// Strict Rate Limiter for Login (5 attempts per 15 min)
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 5,
+    message: 'Too many login attempts, please try again after 15 minutes',
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
 // Login
-router.post('/login', async (req: Request, res: Response) => {
+router.post('/login', loginLimiter, async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
 
