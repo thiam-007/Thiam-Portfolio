@@ -75,7 +75,7 @@ export default function Certifications() {
                     whileInView="visible"
                     viewport={{ once: true, margin: "-50px" }}
                 >
-                    {displayCerts.slice(0, 4).map((cert) => (
+                    {displayCerts.slice(0, 2).map((cert) => (
                         <motion.div
                             key={cert._id}
                             className="bg-[var(--primary)] rounded-lg overflow-hidden shadow-lg cursor-pointer"
@@ -117,7 +117,7 @@ export default function Certifications() {
                     ))}
                 </motion.div>
 
-                {displayCerts.length > 4 && (
+                {displayCerts.length > 2 && (
                     <motion.div
                         className="text-center mt-12"
                         initial={{ opacity: 0 }}
@@ -125,7 +125,7 @@ export default function Certifications() {
                         viewport={{ once: true }}
                     >
                         <Link href="/certifications" className="btn-primary inline-block">
-                            Toutes les certifications
+                            Voir mes certificats
                         </Link>
                     </motion.div>
                 )}

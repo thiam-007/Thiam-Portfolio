@@ -93,7 +93,8 @@ router.post(
 
             // Upload Certification Document
             const certFile = files['file'][0];
-            const certFileName = `${Date.now()}-${certFile.originalname}`;
+            const sanitizedCertName = certFile.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+            const certFileName = `${Date.now()}-${sanitizedCertName}`;
             const { data: certData, error: certError } = await supabaseAdmin.storage
                 .from('certifications')
                 .upload(certFileName, certFile.buffer, {
@@ -117,7 +118,8 @@ router.post(
                     console.warn('Supabase lost during processing?');
                 } else {
                     const coverFile = files['cover_image'][0];
-                    const coverFileName = `${Date.now()}-cover-${coverFile.originalname}`;
+                    const sanitizedCoverName = coverFile.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+                    const coverFileName = `${Date.now()}-cover-${sanitizedCoverName}`;
                     const { data: coverData, error: coverError } = await supabaseAdmin.storage
                         .from('images') // Use public images bucket for cover
                         .upload(`certifications/${coverFileName}`, coverFile.buffer, {
@@ -159,23 +161,30 @@ router.post(
 router.put(
     '/:id',
     authMiddleware,
-    upload.single('file'),
+    upload.fields([
+        { name: 'file', maxCount: 1 },
+        { name: 'cover_image', maxCount: 1 }
+    ]),
     async (req: AuthRequest, res: Response) => {
         try {
+            const files = req.files as { [fieldname: string]: Express.Multer.File[] } | undefined;
             let filePath: string | undefined;
+            let coverImagePath: string | undefined;
 
             // Upload new file if provided
-            if (req.file) {
+            if (files && files['file']) {
                 if (!supabaseAdmin) {
                     res.status(500).json({ message: 'Storage service not configured' });
                     return;
                 }
 
-                const fileName = `${Date.now()}-${req.file.originalname}`;
+                const certFile = files['file'][0];
+                const sanitizedCertName = certFile.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+                const fileName = `${Date.now()}-${sanitizedCertName}`;
                 const { data, error } = await supabaseAdmin.storage
                     .from('certifications')
-                    .upload(fileName, req.file.buffer, {
-                        contentType: req.file.mimetype,
+                    .upload(fileName, certFile.buffer, {
+                        contentType: certFile.mimetype,
                         upsert: false,
                     });
 
@@ -188,9 +197,32 @@ router.put(
                 filePath = data.path;
             }
 
+            // Upload new cover image if provided
+            if (files && files['cover_image']) {
+                if (supabaseAdmin) {
+                    const coverFile = files['cover_image'][0];
+                    const sanitizedCoverName = coverFile.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+                    const coverFileName = `${Date.now()}-cover-${sanitizedCoverName}`;
+                    const { data: coverData, error: coverError } = await supabaseAdmin.storage
+                        .from('images')
+                        .upload(`certifications/${coverFileName}`, coverFile.buffer, {
+                            contentType: coverFile.mimetype,
+                            upsert: false,
+                        });
+
+                    if (!coverError) {
+                        const { data: publicUrlData } = supabaseAdmin.storage
+                            .from('images')
+                            .getPublicUrl(coverData.path);
+                        coverImagePath = publicUrlData.publicUrl;
+                    }
+                }
+            }
+
             const updateData = {
                 ...req.body,
                 ...(filePath && { file_path: filePath }),
+                ...(coverImagePath && { cover_image: coverImagePath }),
             };
 
             const certification = await Certification.findByIdAndUpdate(
@@ -228,10 +260,6 @@ router.delete('/:id', authMiddleware, async (req: AuthRequest, res: Response) =>
                 .remove([certification.file_path]);
 
             if (error) console.error('Supabase delete error:', error);
-        }
-
-        if (error) {
-            console.error('Supabase delete error:', error);
         }
 
         res.json({ message: 'Certification deleted successfully' });

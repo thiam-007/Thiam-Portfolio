@@ -74,7 +74,7 @@ export default function Projects() {
                     whileInView="visible"
                     viewport={{ once: true, margin: "-50px" }}
                 >
-                    {displayProjects.slice(0, 6).map((project) => (
+                    {displayProjects.slice(0, 3).map((project) => (
                         <motion.div
                             key={project._id}
                             className="bg-[var(--secondary)] rounded-lg overflow-hidden shadow-lg project-card cursor-pointer"
@@ -110,7 +110,7 @@ export default function Projects() {
                     ))}
                 </motion.div>
 
-                {displayProjects.length > 6 && (
+                {displayProjects.length > 3 && (
                     <motion.div
                         className="text-center mt-12"
                         initial={{ opacity: 0 }}
@@ -118,7 +118,7 @@ export default function Projects() {
                         viewport={{ once: true }}
                     >
                         <Link href="/projects" className="btn-primary inline-block">
-                            Voir tous les projets
+                            Voir tous mes projets
                         </Link>
                     </motion.div>
                 )}

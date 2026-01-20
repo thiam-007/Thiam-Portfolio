@@ -46,7 +46,8 @@ router.post(
 
       // Upload image to Supabase if provided
       if (req.file) {
-        const fileName = `${Date.now()}-${req.file.originalname}`;
+        const sanitizedOriginalName = req.file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+        const fileName = `${Date.now()}-${sanitizedOriginalName}`;
         const { data, error } = await supabaseAdmin.storage
           .from('images')
           .upload(`projects/${fileName}`, req.file.buffer, {
@@ -103,7 +104,8 @@ router.put(
           return;
         }
 
-        const fileName = `${Date.now()}-${req.file.originalname}`;
+        const sanitizedOriginalName = req.file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+        const fileName = `${Date.now()}-${sanitizedOriginalName}`;
         const { data, error } = await supabaseAdmin.storage
           .from('images')
           .upload(`projects/${fileName}`, req.file.buffer, {
