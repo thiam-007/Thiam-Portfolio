@@ -46,6 +46,11 @@ router.post(
 
       // Upload image to Supabase if provided
       if (req.file) {
+        if (!supabaseAdmin) {
+          res.status(400).json({ message: 'Storage service not configured' });
+          return;
+        }
+
         const sanitizedOriginalName = req.file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
         const fileName = `${Date.now()}-${sanitizedOriginalName}`;
         const { data, error } = await supabaseAdmin.storage
@@ -116,6 +121,11 @@ router.put(
         if (error) {
           console.error('Supabase upload error:', error);
           res.status(500).json({ message: 'Image upload failed' });
+          return;
+        }
+
+        if (!supabaseAdmin) {
+          res.status(400).json({ message: 'Storage service not configured' });
           return;
         }
 

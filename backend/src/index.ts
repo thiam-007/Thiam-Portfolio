@@ -1,4 +1,9 @@
 import 'dotenv/config'; // Must be first
+import dns from 'dns';
+
+// Force usage of IPv4 for DNS resolution to avoid ETIMEDOUT with Node 18+ and undici
+dns.setDefaultResultOrder('ipv4first');
+
 import express from 'express';
 import cors from 'cors';
 import connectToDatabase from './lib/mongodb';

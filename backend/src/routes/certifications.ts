@@ -108,6 +108,11 @@ router.post(
                 return;
             }
 
+            if (!supabaseAdmin) {
+                res.status(400).json({ message: 'Storage service not configured' });
+                return;
+            }
+
             // Upload Cover Image (Optional)
             let coverImagePath = '';
             if (files['cover_image']) {
@@ -210,7 +215,12 @@ router.put(
                             upsert: false,
                         });
 
-                    if (!coverError) {
+                    if (!coverError && coverData) {
+                        if (!supabaseAdmin) {
+                            res.status(400).json({ message: 'Storage service not configured' });
+                            return;
+                        }
+
                         const { data: publicUrlData } = supabaseAdmin.storage
                             .from('images')
                             .getPublicUrl(coverData.path);

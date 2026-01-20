@@ -69,6 +69,11 @@ router.post(
                 return;
             }
 
+            if (!supabaseAdmin) {
+                res.status(400).json({ message: 'Storage service not configured' });
+                return;
+            }
+
             // Upload image to Supabase
             const fileName = `profile-${Date.now()}.${req.file.originalname.split('.').pop()}`;
             const { data, error } = await supabaseAdmin.storage
@@ -81,6 +86,11 @@ router.post(
             if (error) {
                 console.error('Supabase upload error:', error);
                 res.status(500).json({ message: 'Image upload failed' });
+                return;
+            }
+
+            if (!supabaseAdmin) {
+                res.status(400).json({ message: 'Storage service not configured' });
                 return;
             }
 

@@ -29,8 +29,17 @@ test.describe('Portfolio E2E Tests', () => {
 
         // Test clicking a link navigates to the section (visibility check)
         await contactLink.click();
-        // Wait for scrolling to complete or section to become visible
-        await expect(page.locator('#contact')).toBeInViewport({ timeout: 10000 });
+
+        // Wait for the URL to contain #contact
+        await expect(page).toHaveURL(/.*#contact/);
+
+        // Wait specifically for the element to be visible and stable
+        const contactSection = page.locator('#contact');
+        await expect(contactSection).toBeVisible({ timeout: 10000 });
+
+        // If it fails here, we'll know if it's visible or viewport related
+        await expect(contactSection).toBeInViewport({ timeout: 5000 });
+
     });
 
     test('Contact form should be interactable', async ({ page }) => {
