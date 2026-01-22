@@ -137,6 +137,8 @@ export default function Contact() {
                         <div className="flex space-x-4 mt-8">
                             <motion.a
                                 href="https://www.linkedin.com/in/cheick-ahmed-thiam-a72385226"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 whileHover={{ scale: 1.1 }}
                                 className="w-10 h-10 rounded-full bg-[var(--secondary)] flex items-center justify-center hover:bg-[var(--accent)] transition-colors duration-300"
                                 aria-label="LinkedIn Profile"
@@ -145,6 +147,8 @@ export default function Contact() {
                             </motion.a>
                             <motion.a
                                 href="https://github.com/thiam-007"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 whileHover={{ scale: 1.1 }}
                                 className="w-10 h-10 rounded-full bg-[var(--secondary)] flex items-center justify-center hover:bg-[var(--accent)] transition-colors duration-300"
                                 aria-label="GitHub Profile"
@@ -153,6 +157,8 @@ export default function Contact() {
                             </motion.a>
                             <motion.a
                                 href="https://www.facebook.com/cheickahmed.thiam.9"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 whileHover={{ scale: 1.1 }}
                                 className="w-10 h-10 rounded-full bg-[var(--secondary)] flex items-center justify-center hover:bg-[var(--accent)] transition-colors duration-300"
                                 aria-label="Facebook Profile"
