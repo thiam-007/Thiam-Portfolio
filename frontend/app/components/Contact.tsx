@@ -136,7 +136,7 @@ export default function Contact() {
 
                         <div className="flex space-x-4 mt-8">
                             <motion.a
-                                href="#"
+                                href="https://www.linkedin.com/in/cheick-ahmed-thiam-a72385226"
                                 whileHover={{ scale: 1.1 }}
                                 className="w-10 h-10 rounded-full bg-[var(--secondary)] flex items-center justify-center hover:bg-[var(--accent)] transition-colors duration-300"
                                 aria-label="LinkedIn Profile"
@@ -144,7 +144,7 @@ export default function Contact() {
                                 <i className="fab fa-linkedin-in" aria-hidden="true"></i>
                             </motion.a>
                             <motion.a
-                                href="#"
+                                href="https://github.com/thiam-007"
                                 whileHover={{ scale: 1.1 }}
                                 className="w-10 h-10 rounded-full bg-[var(--secondary)] flex items-center justify-center hover:bg-[var(--accent)] transition-colors duration-300"
                                 aria-label="GitHub Profile"
@@ -152,7 +152,7 @@ export default function Contact() {
                                 <i className="fab fa-github" aria-hidden="true"></i>
                             </motion.a>
                             <motion.a
-                                href="#"
+                                href="https://www.facebook.com/cheickahmed.thiam.9"
                                 whileHover={{ scale: 1.1 }}
                                 className="w-10 h-10 rounded-full bg-[var(--secondary)] flex items-center justify-center hover:bg-[var(--accent)] transition-colors duration-300"
                                 aria-label="Facebook Profile"
