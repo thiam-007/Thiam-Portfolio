@@ -151,7 +151,7 @@ export default function Hero() {
                                     alt={profile.name}
                                     className="w-full h-full object-cover"
                                     style={{
-                                        objectPosition: typeof window !== 'undefined' && window.innerWidth < 768 ? 'center 20%' : 'center top'
+                                        objectPosition: typeof window !== 'undefined' && window.innerWidth < 768 ? 'center 30%' : 'center top'
                                     }}
                                 />
                             </div>
