@@ -62,7 +62,7 @@ export default function Footer() {
                             Contact
                         </Link>
                         {isAdmin && (
-                            <Link href="/admin" className="text-sm hover:text-[var(--accent)] text-[var(--accent)] font-medium bg-[var(--accent)] bg-opacity-10 px-3 py-1 rounded-full">
+                            <Link href="/admin" className="text-sm hover:text-[var(--accent)] text-[var(--accent)]">
                                 Admin
                             </Link>
                         )}

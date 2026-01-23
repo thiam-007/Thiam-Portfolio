@@ -64,11 +64,11 @@ export default function Navigation() {
 
                 {/* Desktop Menu */}
                 <div className="hidden md:flex items-center space-x-8">
-                    <a href="#about" className="nav-link">À propos</a>
-                    <a href="#experience" className="nav-link">Expérience</a>
-                    <a href="#projects" className="nav-link">Projets</a>
-                    <a href="#certifications" className="nav-link">Certifications</a>
-                    <a href="#contact" className="nav-link">Contact</a>
+                    <a href="/#about" className="nav-link">À propos</a>
+                    <a href="/#experience" className="nav-link">Expérience</a>
+                    <a href="/#projects" className="nav-link">Projets</a>
+                    <a href="/#certifications" className="nav-link">Certifications</a>
+                    <a href="/#contact" className="nav-link">Contact</a>
                     {cvUrl && (
                         <a
                             href={cvUrl}
@@ -107,19 +107,19 @@ export default function Navigation() {
             {isMobileMenuOpen && (
                 <div className="md:hidden bg-[var(--secondary)] w-full">
                     <div className="container mx-auto px-6 py-4 flex flex-col space-y-4">
-                        <a href="#about" className="block py-2" onClick={() => setIsMobileMenuOpen(false)}>
+                        <a href="/#about" className="block py-2" onClick={() => setIsMobileMenuOpen(false)}>
                             À propos
                         </a>
-                        <a href="#experience" className="block py-2" onClick={() => setIsMobileMenuOpen(false)}>
+                        <a href="/#experience" className="block py-2" onClick={() => setIsMobileMenuOpen(false)}>
                             Expérience
                         </a>
-                        <a href="#projects" className="block py-2" onClick={() => setIsMobileMenuOpen(false)}>
+                        <a href="/#projects" className="block py-2" onClick={() => setIsMobileMenuOpen(false)}>
                             Projets
                         </a>
-                        <a href="#certifications" className="block py-2" onClick={() => setIsMobileMenuOpen(false)}>
+                        <a href="/#certifications" className="block py-2" onClick={() => setIsMobileMenuOpen(false)}>
                             Certifications
                         </a>
-                        <a href="#contact" className="block py-2" onClick={() => setIsMobileMenuOpen(false)}>
+                        <a href="/#contact" className="block py-2" onClick={() => setIsMobileMenuOpen(false)}>
                             Contact
                         </a>
                         {cvUrl && (

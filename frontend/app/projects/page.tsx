@@ -134,66 +134,85 @@ export default function ProjectsPage() {
 
                 {/* Project Modal */}
                 {selectedProject && (
-                    <div className={`modal active`} onClick={() => setSelectedProject(null)}>
-                        <div className="modal-content max-w-4xl" onClick={(e) => e.stopPropagation()}>
-                            <div className="flex justify-between items-start mb-6">
-                                <h3 className="text-2xl font-bold">{selectedProject.title}</h3>
-                                <button onClick={() => setSelectedProject(null)} className="text-2xl hover:text-[var(--accent)]">
+                    <div className="modal active flex items-center justify-center p-4 z-[100]" onClick={() => setSelectedProject(null)}>
+                        <div
+                            className="modal-content max-w-4xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar bg-[var(--secondary)] rounded-xl relative"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="sticky top-0 bg-[var(--secondary)] z-10 px-6 py-4 border-b border-[var(--accent)] border-opacity-10 flex justify-between items-center">
+                                <h3 className="text-2xl font-bold truncate pr-4">{selectedProject.title}</h3>
+                                <button
+                                    onClick={() => setSelectedProject(null)}
+                                    className="text-3xl leading-none hover:text-[var(--accent)] transition-colors"
+                                    aria-label="Close modal"
+                                >
                                     &times;
                                 </button>
                             </div>
 
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-6">
-                                <div>
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img
-                                        src={selectedProject.cover_url || 'https://via.placeholder.com/600x400'}
-                                        alt={selectedProject.title}
-                                        className="w-full h-80 object-cover rounded-lg shadow-inner"
-                                    />
-                                </div>
-                                <div>
-                                    <h4 className="text-[var(--accent)] font-semibold mb-2">Description</h4>
-                                    <p className="whitespace-pre-wrap text-[var(--gray)] mb-6 text-sm leading-relaxed">
-                                        {selectedProject.fullDescription || selectedProject.description}
-                                    </p>
-
-                                    <h4 className="text-[var(--accent)] font-semibold mb-2">Technologies</h4>
-                                    <div className="flex flex-wrap gap-2 mb-6">
-                                        {selectedProject.tech && selectedProject.tech.length > 0 ? (
-                                            selectedProject.tech.map((tag, i) => (
-                                                <span key={i} className="tag">
-                                                    {tag}
-                                                </span>
-                                            ))
-                                        ) : (
-                                            <span className="text-[var(--gray)] text-sm italic">Aucune technologie spécifiée</span>
-                                        )}
+                            <div className="p-6">
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-6">
+                                    <div className="relative group">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img
+                                            src={selectedProject.cover_url || 'https://via.placeholder.com/600x400'}
+                                            alt={selectedProject.title}
+                                            className="w-full h-auto max-h-[400px] object-cover rounded-lg shadow-lg border border-[var(--accent)] border-opacity-10"
+                                        />
                                     </div>
+                                    <div className="flex flex-col">
+                                        <div>
+                                            <h4 className="text-[var(--accent)] font-semibold mb-3 flex items-center">
+                                                <i className="fas fa-info-circle mr-2"></i>
+                                                Description
+                                            </h4>
+                                            <div className="bg-[var(--primary)] bg-opacity-30 p-4 rounded-lg border border-[var(--accent)] border-opacity-5 mb-6">
+                                                <p className="whitespace-pre-wrap text-[var(--gray)] text-sm leading-relaxed">
+                                                    {selectedProject.fullDescription || selectedProject.description}
+                                                </p>
+                                            </div>
 
-                                    <div className="flex flex-wrap gap-4 mt-auto">
-                                        {selectedProject.link && (
-                                            <a
-                                                href={selectedProject.link}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="btn-primary inline-flex items-center"
-                                            >
-                                                <i className="fas fa-external-link-alt mr-2"></i>
-                                                Voir le projet
-                                            </a>
-                                        )}
-                                        {selectedProject.githubLink && (
-                                            <a
-                                                href={selectedProject.githubLink}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="btn-primary inline-flex items-center"
-                                            >
-                                                <i className="fab fa-github mr-2"></i>
-                                                Code source
-                                            </a>
-                                        )}
+                                            <h4 className="text-[var(--accent)] font-semibold mb-3 flex items-center">
+                                                <i className="fas fa-code mr-2"></i>
+                                                Technologies
+                                            </h4>
+                                            <div className="flex flex-wrap gap-2 mb-8">
+                                                {selectedProject.tech && selectedProject.tech.length > 0 ? (
+                                                    selectedProject.tech.map((tag, i) => (
+                                                        <span key={i} className="tag px-3 py-1 text-xs">
+                                                            {tag}
+                                                        </span>
+                                                    ))
+                                                ) : (
+                                                    <span className="text-[var(--gray)] text-sm italic">Aucune technologie spécifiée</span>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        <div className="flex flex-wrap gap-4 mt-auto pt-6 border-t border-[var(--accent)] border-opacity-5">
+                                            {selectedProject.link && (
+                                                <a
+                                                    href={selectedProject.link}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="btn-primary inline-flex items-center text-sm py-2 px-6"
+                                                >
+                                                    <i className="fas fa-external-link-alt mr-2"></i>
+                                                    Voir le projet
+                                                </a>
+                                            )}
+                                            {selectedProject.githubLink && (
+                                                <a
+                                                    href={selectedProject.githubLink}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="btn-primary inline-flex items-center text-sm py-2 px-6 bg-opacity-20 hover:bg-opacity-100"
+                                                >
+                                                    <i className="fab fa-github mr-2"></i>
+                                                    Code source
+                                                </a>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
