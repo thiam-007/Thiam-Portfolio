@@ -134,22 +134,22 @@ export default function Hero() {
                     </motion.div>
 
                     <motion.div
-                        className="w-full md:w-1/3 flex justify-center mb-8 md:mb-0"
+                        className="w-full md:w-2/5 flex justify-center mb-12 md:mb-0"
                         initial={{ opacity: 0, scale: 0.5 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.5, duration: 0.8 }}
                     >
-                        <div className="w-64 h-64 relative">
+                        <div className="w-64 h-64 md:w-80 md:h-80 lg:w-[450px] lg:h-[450px] relative">
                             <motion.div
                                 className="absolute inset-0 rounded-full border-2 border-[var(--accent)]"
-                                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
+                                animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.2, 0.5] }}
                                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                             ></motion.div>
-                            <div className="w-full h-full rounded-full overflow-hidden border-4 border-[var(--accent)]">
+                            <div className="w-full h-full rounded-full overflow-hidden border-4 border-[var(--accent)] shadow-2xl">
                                 <img
                                     src={profile.profileImageUrl}
                                     alt={profile.name}
-                                    className="w-full h-full object-cover object-top"
+                                    className="w-full h-full object-cover object-center"
                                 />
                             </div>
                         </div>
