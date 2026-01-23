@@ -149,7 +149,7 @@ export default function Hero() {
                                 <img
                                     src={profile.profileImageUrl}
                                     alt={profile.name}
-                                    className="w-full h-full object-cover object-center"
+                                    className="w-full h-full object-cover object-top"
                                 />
                             </div>
                         </div>
