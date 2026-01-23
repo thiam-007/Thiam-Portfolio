@@ -37,9 +37,17 @@ Unlike static portfolios, this application includes a fully protected **Admin Da
     -   Open Graph & Twitter Cards for social sharing.
     -   Automatic `sitemap.xml` and `robots.txt`.
     -   Lighthouse optimised structure (Semantic HTML).
-4.  **Security Best Practices**:
+4.  **Navigation & UX Enhancements**:
+    -   Breadcrumbs for easy navigation between pages.
+    -   Pagination (6 items per page) for Experience, Projects, and Certifications listings.
+    -   Card-based layout for the Experiences gallery.
+5.  **Security & Session Management**:
     -   XSS Protection & Security Headers.
     -   Rate Limiting (DDoS protection).
+    -   **Admin Session Security**:
+        -   Automatic logout after 10 minutes of inactivity.
+        -   Session-based authentication (logs out on browser close).
+        -   Admin link hidden for non-authenticated visitors.
     -   Input Sanitization.
 
 ## 📦 Installation & Setup

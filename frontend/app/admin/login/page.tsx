@@ -19,8 +19,12 @@ export default function AdminLoginPage() {
 
         try {
             const response = await apiClient.auth.login(formData.email, formData.password);
-            localStorage.setItem('admin_token', response.data.token);
-            localStorage.setItem('admin_name', response.data.admin.name);
+            sessionStorage.setItem('admin_token', response.data.token);
+            sessionStorage.setItem('admin_name', response.data.admin.name);
+
+            // Trigger event for Footer to update immediately
+            window.dispatchEvent(new Event('admin-state-change'));
+
             toast.success('Connexion réussie!');
             router.push('/admin');
         } catch (error: any) {

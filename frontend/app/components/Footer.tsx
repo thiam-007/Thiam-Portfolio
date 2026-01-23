@@ -7,18 +7,24 @@ export default function Footer() {
     const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
-        // Check if admin token exists in localStorage
-        const token = localStorage.getItem('admin_token');
-        setIsAdmin(!!token);
-
-        // Listen for storage changes (login/logout in other tabs)
-        const handleStorageChange = () => {
-            const newToken = localStorage.getItem('admin_token');
-            setIsAdmin(!!newToken);
+        // Check if admin token exists in sessionStorage (new) or localStorage (old)
+        const checkAdmin = () => {
+            const token = sessionStorage.getItem('admin_token') || localStorage.getItem('admin_token');
+            setIsAdmin(!!token);
         };
 
-        window.addEventListener('storage', handleStorageChange);
-        return () => window.removeEventListener('storage', handleStorageChange);
+        checkAdmin();
+
+        // Listen for storage changes (login/logout in other tabs)
+        window.addEventListener('storage', checkAdmin);
+
+        // Custom event for same-tab updates
+        window.addEventListener('admin-state-change', checkAdmin);
+
+        return () => {
+            window.removeEventListener('storage', checkAdmin);
+            window.removeEventListener('admin-state-change', checkAdmin);
+        };
     }, []);
 
     return (
@@ -40,23 +46,23 @@ export default function Footer() {
                     </div>
 
                     <div className="flex items-center space-x-6">
-                        <a href="#about" className="text-sm hover:text-[var(--accent)]">
+                        <Link href="/#about" className="text-sm hover:text-[var(--accent)]">
                             À propos
-                        </a>
-                        <a href="#experience" className="text-sm hover:text-[var(--accent)]">
+                        </Link>
+                        <Link href="/#experience" className="text-sm hover:text-[var(--accent)]">
                             Expérience
-                        </a>
-                        <a href="#projects" className="text-sm hover:text-[var(--accent)]">
+                        </Link>
+                        <Link href="/#projects" className="text-sm hover:text-[var(--accent)]">
                             Projets
-                        </a>
-                        <a href="#certifications" className="text-sm hover:text-[var(--accent)]">
+                        </Link>
+                        <Link href="/#certifications" className="text-sm hover:text-[var(--accent)]">
                             Certifications
-                        </a>
-                        <a href="#contact" className="text-sm hover:text-[var(--accent)]">
+                        </Link>
+                        <Link href="/#contact" className="text-sm hover:text-[var(--accent)]">
                             Contact
-                        </a>
+                        </Link>
                         {isAdmin && (
-                            <Link href="/admin" className="text-sm hover:text-[var(--accent)] text-[var(--accent)]">
+                            <Link href="/admin" className="text-sm hover:text-[var(--accent)] text-[var(--accent)] font-medium bg-[var(--accent)] bg-opacity-10 px-3 py-1 rounded-full">
                                 Admin
                             </Link>
                         )}

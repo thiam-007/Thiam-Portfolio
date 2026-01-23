@@ -9,8 +9,8 @@ export default function AdminDashboard() {
     const [adminName, setAdminName] = useState('');
 
     useEffect(() => {
-        const token = localStorage.getItem('admin_token');
-        const name = localStorage.getItem('admin_name');
+        const token = sessionStorage.getItem('admin_token') || localStorage.getItem('admin_token');
+        const name = sessionStorage.getItem('admin_name') || localStorage.getItem('admin_name');
 
         if (!token) {
             router.push('/admin/login');
@@ -20,8 +20,14 @@ export default function AdminDashboard() {
     }, [router]);
 
     const handleLogout = () => {
+        sessionStorage.removeItem('admin_token');
+        sessionStorage.removeItem('admin_name');
         localStorage.removeItem('admin_token');
         localStorage.removeItem('admin_name');
+
+        // Notify other components
+        window.dispatchEvent(new Event('admin-state-change'));
+
         router.push('/admin/login');
     };
 
