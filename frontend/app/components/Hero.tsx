@@ -139,7 +139,7 @@ export default function Hero() {
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.5, duration: 0.8 }}
                     >
-                        <div className="w-64 h-64 md:w-80 md:h-80 lg:w-[450px] lg:h-[450px] relative">
+                        <div className="w-64 h-64 md:w-96 md:h-96 lg:w-[550px] lg:h-[550px] relative">
                             <motion.div
                                 className="absolute inset-0 rounded-full border-2 border-[var(--accent)]"
                                 animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.2, 0.5] }}
@@ -149,7 +149,10 @@ export default function Hero() {
                                 <img
                                     src={profile.profileImageUrl}
                                     alt={profile.name}
-                                    className="w-full h-full object-cover object-top"
+                                    className="w-full h-full object-cover"
+                                    style={{
+                                        objectPosition: typeof window !== 'undefined' && window.innerWidth < 768 ? 'center 10%' : 'center top'
+                                    }}
                                 />
                             </div>
                         </div>
