@@ -1,8 +1,6 @@
-import 'dotenv/config'; // Must be first
+import 'dotenv/config';
 import dns from 'dns';
-
-// Force usage of IPv4 for DNS resolution to avoid ETIMEDOUT with Node 18+ and undici
-dns.setDefaultResultOrder('ipv4first');
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 import express from 'express';
 import cors from 'cors';
