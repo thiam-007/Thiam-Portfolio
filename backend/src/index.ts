@@ -7,7 +7,7 @@ import cors from 'cors';
 import connectToDatabase from './lib/mongodb';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import mongoSanitize from 'express-mongo-sanitize';
+import { mongoSanitizeMiddleware } from './middleware/mongoSanitize';
 import hpp from 'hpp';
 import authRoutes from './routes/auth';
 import experienceRoutes from './routes/experiences';
@@ -36,7 +36,8 @@ const globalLimiter = rateLimit({
 app.use('/api', globalLimiter);
 
 // Data Sanitization
-app.use(mongoSanitize()); // Prevent NoSQL injection
+app.use(express.json());
+app.use(mongoSanitizeMiddleware); // Custom sanitizer for Express 5 compatibility
 app.use(hpp()); // Prevent HTTP Parameter Pollution
 
 // CORS configuration
@@ -44,8 +45,6 @@ app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
   credentials: true,
 }));
-
-app.use(express.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
