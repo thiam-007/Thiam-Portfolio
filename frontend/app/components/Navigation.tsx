@@ -8,7 +8,11 @@ export default function Navigation() {
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [cvUrl, setCvUrl] = useState<string | null>(null);
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    const getApiUrl = () => {
+        const url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+        return url.replace(/\/api\/?$/, '');
+    };
+    const API_URL = getApiUrl();
 
     useEffect(() => {
         // Fetch CV URL

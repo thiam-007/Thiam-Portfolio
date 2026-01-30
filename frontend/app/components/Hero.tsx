@@ -25,7 +25,11 @@ export default function Hero() {
 
     const texts = profile.typingTexts;
     const [cvUrl, setCvUrl] = useState<string | null>(null);
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    const getApiUrl = () => {
+        const url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+        return url.replace(/\/api\/?$/, '');
+    };
+    const API_URL = getApiUrl();
 
     useEffect(() => {
         // Fetch dynamic profile data including CV

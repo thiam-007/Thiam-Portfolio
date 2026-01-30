@@ -21,7 +21,7 @@ services:
     env_file:
       - ./frontend/.env.local
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:5000/api
+      - NEXT_PUBLIC_API_URL=http://localhost:5000
     depends_on:
       - backend
     restart: always
