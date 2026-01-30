@@ -1,75 +1,61 @@
-import express, { Response } from 'express';
+import express, { Response, NextFunction } from 'express';
 import multer from 'multer';
 import Certification from '../models/Certification';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import supabaseAdmin from '../lib/supabase';
 
 const router = express.Router();
-
-// Configure multer for memory storage
 const upload = multer({ storage: multer.memoryStorage() });
 
-// Get all certifications (public)
-router.get('/', async (req, res: Response) => {
+router.get('/', async (req, res: Response, next: NextFunction) => {
     try {
         const certifications = await Certification.find()
             .sort({ createdAt: -1 })
             .select('-__v');
         res.json(certifications);
     } catch (error) {
-        console.error('Get certifications error:', error);
-        res.status(500).json({ message: 'Server error' });
+        next(error);
     }
 });
 
-// Get single certification
-router.get('/:id', async (req, res: Response) => {
+router.get('/:id', async (req, res: Response, next: NextFunction) => {
     try {
         const certification = await Certification.findById(req.params.id).select('-__v');
         if (!certification) {
-            res.status(404).json({ message: 'Certification not found' });
-            return;
+            return res.status(404).json({ message: 'Certification not found' });
         }
         res.json(certification);
     } catch (error) {
-        console.error('Get certification error:', error);
-        res.status(500).json({ message: 'Server error' });
+        next(error);
     }
 });
 
-// Download certification file
-router.get('/:id/download', async (req, res: Response) => {
+router.get('/:id/download', async (req, res: Response, next: NextFunction) => {
     try {
         const certification = await Certification.findById(req.params.id);
         if (!certification) {
-            res.status(404).json({ message: 'Certification not found' });
-            return;
+            return res.status(404).json({ message: 'Certification not found' });
         }
 
         if (!supabaseAdmin) {
-            res.status(500).json({ message: 'Storage service not configured' });
-            return;
+            return res.status(500).json({ message: 'Storage service not configured' });
         }
 
-        // Create signed URL for download (valid for 1 hour)
         const { data, error } = await supabaseAdmin.storage
             .from('certifications')
             .createSignedUrl(certification.file_path, 3600);
 
         if (error || !data) {
             console.error('Supabase download error:', error);
-            res.status(500).json({ message: 'File download failed' });
-            return;
+            return res.status(500).json({ message: 'File download failed' });
         }
 
         res.redirect(data.signedUrl);
     } catch (error) {
-        console.error('Download certification error:', error);
-        res.status(500).json({ message: 'Server error' });
+        next(error);
     }
 });
 
-// Create certification with file upload (admin only)
 router.post(
     '/',
     authMiddleware,
@@ -77,21 +63,18 @@ router.post(
         { name: 'file', maxCount: 1 },
         { name: 'cover_image', maxCount: 1 }
     ]),
-    async (req: AuthRequest, res: Response) => {
+    async (req: AuthRequest, res: Response, next: NextFunction) => {
         try {
             const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
             if (!files || !files['file']) {
-                res.status(400).json({ message: 'Certification file is required' });
-                return;
+                return res.status(400).json({ message: 'Certification file is required' });
             }
 
             if (!supabaseAdmin) {
-                res.status(500).json({ message: 'Storage service not configured' });
-                return;
+                return res.status(500).json({ message: 'Storage service not configured' });
             }
 
-            // Upload Certification Document
             const certFile = files['file'][0];
             const sanitizedCertName = certFile.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
             const certFileName = `${Date.now()}-${sanitizedCertName}`;
@@ -104,44 +87,26 @@ router.post(
 
             if (certError) {
                 console.error('Supabase upload error (file):', certError);
-                res.status(500).json({ message: 'File upload failed' });
-                return;
+                return res.status(500).json({ message: 'File upload failed' });
             }
 
-            if (!supabaseAdmin) {
-                res.status(400).json({ message: 'Storage service not configured' });
-                return;
-            }
-
-            // Upload Cover Image (Optional)
             let coverImagePath = '';
             if (files['cover_image']) {
-                if (!supabaseAdmin) {
-                    // Should verify if we want to fail partial uploads. 
-                    // Since we checked earlier, this is logically safe but TS doesn't know.
-                    // Re-assert or check.
-                    console.warn('Supabase lost during processing?');
-                } else {
-                    const coverFile = files['cover_image'][0];
-                    const sanitizedCoverName = coverFile.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
-                    const coverFileName = `${Date.now()}-cover-${sanitizedCoverName}`;
-                    const { data: coverData, error: coverError } = await supabaseAdmin.storage
-                        .from('images') // Use public images bucket for cover
-                        .upload(`certifications/${coverFileName}`, coverFile.buffer, {
-                            contentType: coverFile.mimetype,
-                            upsert: false,
-                        });
+                const coverFile = files['cover_image'][0];
+                const sanitizedCoverName = coverFile.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+                const coverFileName = `${Date.now()}-cover-${sanitizedCoverName}`;
+                const { data: coverData, error: coverError } = await supabaseAdmin.storage
+                    .from('images')
+                    .upload(`certifications/${coverFileName}`, coverFile.buffer, {
+                        contentType: coverFile.mimetype,
+                        upsert: false,
+                    });
 
-                    if (coverError) {
-                        console.warn('Supabase upload error (cover):', coverError);
-                        // Continue without cover if it fails? Or fail? Let's log and continue for now or throw.
-                        // Better to fail so user knows.
-                    } else {
-                        const { data: publicUrlData } = supabaseAdmin.storage
-                            .from('images')
-                            .getPublicUrl(coverData.path);
-                        coverImagePath = publicUrlData.publicUrl;
-                    }
+                if (!coverError) {
+                    const { data: publicUrlData } = supabaseAdmin.storage
+                        .from('images')
+                        .getPublicUrl(coverData.path);
+                    coverImagePath = publicUrlData.publicUrl;
                 }
             }
 
@@ -156,13 +121,11 @@ router.post(
 
             res.status(201).json(certification);
         } catch (error) {
-            console.error('Create certification error:', error);
-            res.status(500).json({ message: 'Server error' });
+            next(error);
         }
     }
 );
 
-// Update certification (admin only)
 router.put(
     '/:id',
     authMiddleware,
@@ -170,17 +133,15 @@ router.put(
         { name: 'file', maxCount: 1 },
         { name: 'cover_image', maxCount: 1 }
     ]),
-    async (req: AuthRequest, res: Response) => {
+    async (req: AuthRequest, res: Response, next: NextFunction) => {
         try {
             const files = req.files as { [fieldname: string]: Express.Multer.File[] } | undefined;
             let filePath: string | undefined;
             let coverImagePath: string | undefined;
 
-            // Upload new file if provided
             if (files && files['file']) {
                 if (!supabaseAdmin) {
-                    res.status(500).json({ message: 'Storage service not configured' });
-                    return;
+                    return res.status(500).json({ message: 'Storage service not configured' });
                 }
 
                 const certFile = files['file'][0];
@@ -195,14 +156,12 @@ router.put(
 
                 if (error) {
                     console.error('Supabase upload error:', error);
-                    res.status(500).json({ message: 'File upload failed' });
-                    return;
+                    return res.status(500).json({ message: 'File upload failed' });
                 }
 
                 filePath = data.path;
             }
 
-            // Upload new cover image if provided
             if (files && files['cover_image']) {
                 if (supabaseAdmin) {
                     const coverFile = files['cover_image'][0];
@@ -216,11 +175,6 @@ router.put(
                         });
 
                     if (!coverError && coverData) {
-                        if (!supabaseAdmin) {
-                            res.status(400).json({ message: 'Storage service not configured' });
-                            return;
-                        }
-
                         const { data: publicUrlData } = supabaseAdmin.storage
                             .from('images')
                             .getPublicUrl(coverData.path);
@@ -242,28 +196,23 @@ router.put(
             ).select('-__v');
 
             if (!certification) {
-                res.status(404).json({ message: 'Certification not found' });
-                return;
+                return res.status(404).json({ message: 'Certification not found' });
             }
 
             res.json(certification);
         } catch (error) {
-            console.error('Update certification error:', error);
-            res.status(500).json({ message: 'Server error' });
+            next(error);
         }
     }
 );
 
-// Delete certification (admin only)
-router.delete('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.delete('/:id', authMiddleware, async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const certification = await Certification.findByIdAndDelete(req.params.id);
         if (!certification) {
-            res.status(404).json({ message: 'Certification not found' });
-            return;
+            return res.status(404).json({ message: 'Certification not found' });
         }
 
-        // Delete file from Supabase
         if (supabaseAdmin) {
             const { error } = await supabaseAdmin.storage
                 .from('certifications')
@@ -274,8 +223,7 @@ router.delete('/:id', authMiddleware, async (req: AuthRequest, res: Response) =>
 
         res.json({ message: 'Certification deleted successfully' });
     } catch (error) {
-        console.error('Delete certification error:', error);
-        res.status(500).json({ message: 'Server error' });
+        next(error);
     }
 });
 

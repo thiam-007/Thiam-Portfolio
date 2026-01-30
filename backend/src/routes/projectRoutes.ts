@@ -1,54 +1,44 @@
-import express, { Response } from 'express';
+import express, { Response, NextFunction } from 'express';
 import multer from 'multer';
 import Project from '../models/Project';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import supabaseAdmin from '../lib/supabase';
 
 const router = express.Router();
-
-// Configure multer for memory storage
 const upload = multer({ storage: multer.memoryStorage() });
 
-// Get all projects (public - only visible)
-router.get('/', async (req, res: Response) => {
+router.get('/', async (req, res: Response, next: NextFunction) => {
   try {
     const projects = await Project.find().sort({ createdAt: -1 });
     res.json(projects);
   } catch (error) {
-    console.error('Get projects error:', error);
-    res.status(500).json({ message: 'Server error' });
+    next(error);
   }
 });
 
-// Get single project
-router.get('/:id', async (req, res: Response) => {
+router.get('/:id', async (req, res: Response, next: NextFunction) => {
   try {
     const project = await Project.findById(req.params.id);
     if (!project) {
-      res.status(404).json({ message: 'Project not found' });
-      return;
+      return res.status(404).json({ message: 'Project not found' });
     }
     res.json(project);
   } catch (error) {
-    console.error('Get project error:', error);
-    res.status(500).json({ message: 'Server error' });
+    next(error);
   }
 });
 
-// Create project with image upload (admin only)
 router.post(
   '/',
   authMiddleware,
   upload.single('image'),
-  async (req: AuthRequest, res: Response) => {
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       let imageUrl = '';
 
-      // Upload image to Supabase if provided
       if (req.file) {
         if (!supabaseAdmin) {
-          res.status(400).json({ message: 'Storage service not configured' });
-          return;
+          return res.status(400).json({ message: 'Storage service not configured' });
         }
 
         const sanitizedOriginalName = req.file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
@@ -62,11 +52,9 @@ router.post(
 
         if (error) {
           console.error('Supabase upload error:', error);
-          res.status(500).json({ message: 'Image upload failed' });
-          return;
+          return res.status(500).json({ message: 'Image upload failed' });
         }
 
-        // Get public URL
         const { data: urlData } = supabaseAdmin.storage
           .from('images')
           .getPublicUrl(data.path);
@@ -84,29 +72,22 @@ router.post(
 
       res.status(201).json(project);
     } catch (error) {
-      console.error('Create project error:', error);
-      res.status(500).json({ message: 'Server error' });
+      next(error);
     }
   }
 );
 
-// Update project (admin only)
 router.put(
   '/:id',
   authMiddleware,
   upload.single('image'),
-  async (req: AuthRequest, res: Response) => {
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       let imageUrl: string | undefined;
 
-      // Upload new image if provided
       if (req.file) {
         if (!supabaseAdmin) {
-          console.warn('Supabase not configured - skipping upload');
-          // If we strictly require upload, we could return 400 here.
-          // But to prevent crash we just log it or return error if critical.
-          res.status(400).json({ message: 'Storage service not configured' });
-          return;
+          return res.status(400).json({ message: 'Storage service not configured' });
         }
 
         const sanitizedOriginalName = req.file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
@@ -120,13 +101,7 @@ router.put(
 
         if (error) {
           console.error('Supabase upload error:', error);
-          res.status(500).json({ message: 'Image upload failed' });
-          return;
-        }
-
-        if (!supabaseAdmin) {
-          res.status(400).json({ message: 'Storage service not configured' });
-          return;
+          return res.status(500).json({ message: 'Image upload failed' });
         }
 
         const { data: urlData } = supabaseAdmin.storage
@@ -148,34 +123,26 @@ router.put(
       );
 
       if (!project) {
-        res.status(404).json({ message: 'Project not found' });
-        return;
+        return res.status(404).json({ message: 'Project not found' });
       }
 
       res.json(project);
     } catch (error) {
-      console.error('Update project error:', error);
-      res.status(500).json({ message: 'Server error' });
+      next(error);
     }
   }
 );
 
-// Delete project (admin only)
-router.delete('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.delete('/:id', authMiddleware, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const project = await Project.findByIdAndDelete(req.params.id);
     if (!project) {
-      res.status(404).json({ message: 'Project not found' });
-      return;
+      return res.status(404).json({ message: 'Project not found' });
     }
-
-    // Optionally delete image from Supabase
-    // You can extract the path from cover_url and delete it
 
     res.json({ message: 'Project deleted successfully' });
   } catch (error) {
-    console.error('Delete project error:', error);
-    res.status(500).json({ message: 'Server error' });
+    next(error);
   }
 });
 

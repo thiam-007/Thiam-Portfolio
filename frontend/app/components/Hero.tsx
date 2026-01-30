@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-// Profil statique de Portfolio.html
 const profile = {
     name: 'Cheick Ahmed Thiam',
     title: 'Consultant en Stratégie & Développement de Projets | Développeur Full Stack',
@@ -32,7 +31,6 @@ export default function Hero() {
     const API_URL = getApiUrl();
 
     useEffect(() => {
-        // Fetch dynamic profile data including CV
         fetch(`${API_URL}/api/profile`)
             .then(res => res.ok ? res.json() : null)
             .then(data => {
@@ -43,6 +41,7 @@ export default function Hero() {
             .catch(err => console.error('Error fetching profile:', err));
     }, []);
 
+    // Typing effect logic
     useEffect(() => {
         const typeSpeed = isDeleting ? 50 : 100;
         const pauseTime = isDeleting ? 0 : 1500;
@@ -84,6 +83,7 @@ export default function Hero() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2, duration: 0.5 }}
                         >
+                            {/* Greeting logic based on time of day */}
                             {(() => {
                                 const hour = new Date().getHours();
                                 if (hour >= 0 && hour < 12) return "Bonjour, je m'appelle";

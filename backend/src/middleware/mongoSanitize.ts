@@ -17,7 +17,6 @@ const sanitize = (obj: any) => {
 
     for (const key in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, key)) {
-            // Check for properties starting with $
             if (key.startsWith('$')) {
                 delete obj[key];
                 continue;

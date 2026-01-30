@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'react-hot-toast';
-import Script from 'next/script';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const poppins = Poppins({
     weight: ['300', '400', '500', '600', '700'],
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     keywords: ['Consultant', 'Développeur Full Stack', 'MERN', 'Gestion de Projet', 'Entrepreneuriat', 'Analyse Stratégique', 'Design', 'Next.js', 'React', 'Node.js'],
     authors: [{ name: 'Cheick Ahmed Thiam' }],
     creator: 'Cheick Ahmed Thiam',
-    metadataBase: new URL('https://thiam-portfolio.vercel.app'), // Replace with actual domain if different
+    metadataBase: new URL('https://thiam-portfolio.vercel.app'),
     openGraph: {
         title: 'Cheick Ahmed Thiam - Consultant & Développeur Full Stack',
         description: 'Solutions innovantes en stratégie et développement web.',
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
         siteName: 'Cheick Ahmed Thiam Portfolio',
         images: [
             {
-                url: '/opengraph-image.jpg', // Ensure this image exists in public folder
+                url: '/opengraph-image.jpg',
                 width: 1200,
                 height: 630,
                 alt: 'Cheick Ahmed Thiam Portfolio',
@@ -40,8 +40,8 @@ export const metadata: Metadata = {
         card: 'summary_large_image',
         title: 'Cheick Ahmed Thiam - Consultant & Développeur Full Stack',
         description: 'Solutions innovantes en stratégie et développement web.',
-        creator: '@cheick_thiam', // Replace with actual handle if available
-        images: ['/twitter-image.jpg'], // Ensure this image exists
+        creator: '@cheick_thiam',
+        images: ['/twitter-image.jpg'],
     },
     robots: {
         index: true,
@@ -56,7 +56,6 @@ export const metadata: Metadata = {
     },
     icons: {
         icon: '/favicon.ico',
-        // apple: '/apple-icon.png', // Add if available
     },
 };
 
@@ -74,7 +73,9 @@ export default function RootLayout({
                 />
             </head>
             <body className={poppins.className}>
-                {children}
+                <ErrorBoundary>
+                    {children}
+                </ErrorBoundary>
                 <Toaster position="bottom-right" />
             </body>
         </html>

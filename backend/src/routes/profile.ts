@@ -1,20 +1,16 @@
-import express, { Response } from 'express';
+import express, { Response, NextFunction } from 'express';
 import multer from 'multer';
 import Profile from '../models/Profile';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import supabaseAdmin from '../lib/supabase';
 
 const router = express.Router();
-
-// Configure multer for memory storage
 const upload = multer({ storage: multer.memoryStorage() });
 
-// Get profile (public)
-router.get('/', async (req, res: Response) => {
+router.get('/', async (req, res: Response, next: NextFunction) => {
     try {
         let profile = await Profile.findOne().select('-__v');
 
-        // Create default profile if none exists
         if (!profile) {
             profile = new Profile({
                 name: 'Cheick Ahmed Thiam',
@@ -33,13 +29,11 @@ router.get('/', async (req, res: Response) => {
 
         res.json(profile);
     } catch (error) {
-        console.error('Get profile error:', error);
-        res.status(500).json({ message: 'Server error' });
+        next(error);
     }
 });
 
-// Update profile (admin only)
-router.put('/', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.put('/', authMiddleware, async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         let profile = await Profile.findOne();
 
@@ -52,29 +46,24 @@ router.put('/', authMiddleware, async (req: AuthRequest, res: Response) => {
         await profile.save();
         res.json(profile);
     } catch (error) {
-        console.error('Update profile error:', error);
-        res.status(500).json({ message: 'Server error' });
+        next(error);
     }
 });
 
-// Update profile image (admin only)
 router.post(
     '/image',
     authMiddleware,
     upload.single('image'),
-    async (req: AuthRequest, res: Response) => {
+    async (req: AuthRequest, res: Response, next: NextFunction) => {
         try {
             if (!req.file) {
-                res.status(400).json({ message: 'Image file is required' });
-                return;
+                return res.status(400).json({ message: 'Image file is required' });
             }
 
             if (!supabaseAdmin) {
-                res.status(400).json({ message: 'Storage service not configured' });
-                return;
+                return res.status(400).json({ message: 'Storage service not configured' });
             }
 
-            // Upload image to Supabase
             const fileName = `profile-${Date.now()}.${req.file.originalname.split('.').pop()}`;
             const { data, error } = await supabaseAdmin.storage
                 .from('images')
@@ -85,21 +74,13 @@ router.post(
 
             if (error) {
                 console.error('Supabase upload error:', error);
-                res.status(500).json({ message: 'Image upload failed' });
-                return;
+                return res.status(500).json({ message: 'Image upload failed' });
             }
 
-            if (!supabaseAdmin) {
-                res.status(400).json({ message: 'Storage service not configured' });
-                return;
-            }
-
-            // Get public URL
             const { data: urlData } = supabaseAdmin.storage
                 .from('images')
                 .getPublicUrl(data.path);
 
-            // Update profile with new image URL
             let profile = await Profile.findOne();
             if (!profile) {
                 profile = new Profile({ profileImageUrl: urlData.publicUrl });
@@ -114,38 +95,32 @@ router.post(
                 imageUrl: urlData.publicUrl,
             });
         } catch (error) {
-            console.error('Update profile image error:', error);
-            res.status(500).json({ message: 'Server error' });
+            next(error);
         }
     }
 );
 
-// Upload CV (admin only)
 router.post(
     '/cv',
     authMiddleware,
     upload.single('cv'),
-    async (req: AuthRequest, res: Response) => {
+    async (req: AuthRequest, res: Response, next: NextFunction) => {
         try {
             if (!req.file) {
-                res.status(400).json({ message: 'CV file is required' });
-                return;
+                return res.status(400).json({ message: 'CV file is required' });
             }
 
             if (req.file.mimetype !== 'application/pdf') {
-                res.status(400).json({ message: 'Only PDF files are allowed' });
-                return;
+                return res.status(400).json({ message: 'Only PDF files are allowed' });
             }
 
             if (!supabaseAdmin) {
-                res.status(500).json({ message: 'Storage not configured' });
-                return;
+                return res.status(500).json({ message: 'Storage not configured' });
             }
 
-            // Upload CV to Supabase (using 'images' bucket but inside 'documents' folder if possible, or just 'cv')
             const fileName = `cv-${Date.now()}.pdf`;
             const { data, error } = await supabaseAdmin.storage
-                .from('images') // Reusing images bucket as it's likely the only one configured/public. Ideally should be 'documents'
+                .from('images')
                 .upload(`cv/${fileName}`, req.file.buffer, {
                     contentType: 'application/pdf',
                     upsert: true,
@@ -153,16 +128,13 @@ router.post(
 
             if (error) {
                 console.error('Supabase CV upload error:', error);
-                res.status(500).json({ message: 'CV upload failed' });
-                return;
+                return res.status(500).json({ message: 'CV upload failed' });
             }
 
-            // Get public URL
             const { data: urlData } = supabaseAdmin.storage
                 .from('images')
                 .getPublicUrl(data.path);
 
-            // Update profile with new CV URL using findOneAndUpdate to avoid validation errors on other fields
             const profile = await Profile.findOneAndUpdate(
                 {},
                 { $set: { cvUrl: urlData.publicUrl } },
@@ -174,8 +146,7 @@ router.post(
                 cvUrl: profile.cvUrl,
             });
         } catch (error) {
-            console.error('Update CV error:', error);
-            res.status(500).json({ message: 'Server error' });
+            next(error);
         }
     }
 );

@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Admin from '../models/Admin';
@@ -7,7 +7,6 @@ import rateLimit from 'express-rate-limit';
 
 const router = express.Router();
 
-// Strict Rate Limiter for Login (5 attempts per 15 min)
 const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 5,
@@ -16,32 +15,27 @@ const loginLimiter = rateLimit({
     legacyHeaders: false,
 });
 
-// Login
-router.post('/login', loginLimiter, async (req: Request, res: Response) => {
+router.post('/login', loginLimiter, async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, password } = req.body;
 
         if (!email || !password) {
-            res.status(400).json({ message: 'Email and password are required' });
-            return;
+            return res.status(400).json({ message: 'Email and password are required' });
         }
 
         const admin = await Admin.findOne({ email });
         if (!admin) {
-            res.status(401).json({ message: 'Invalid credentials' });
-            return;
+            return res.status(401).json({ message: 'Invalid credentials' });
         }
 
         const isPasswordValid = await bcrypt.compare(password, admin.password);
         if (!isPasswordValid) {
-            res.status(401).json({ message: 'Invalid credentials' });
-            return;
+            return res.status(401).json({ message: 'Invalid credentials' });
         }
 
         const jwtSecret = process.env.JWT_SECRET;
         if (!jwtSecret) {
-            res.status(500).json({ message: 'Server configuration error' });
-            return;
+            return res.status(500).json({ message: 'Server configuration error' });
         }
 
         const token = jwt.sign({ id: admin._id }, jwtSecret, { expiresIn: '7d' });
@@ -56,43 +50,35 @@ router.post('/login', loginLimiter, async (req: Request, res: Response) => {
             },
         });
     } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ message: 'Server error' });
+        next(error);
     }
 });
 
-// Get current admin info (protected)
-router.get('/me', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.get('/me', authMiddleware, async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const admin = await Admin.findById(req.adminId).select('-password -__v');
         if (!admin) {
-            res.status(404).json({ message: 'Admin not found' });
-            return;
+            return res.status(404).json({ message: 'Admin not found' });
         }
         res.json(admin);
     } catch (error) {
-        console.error('Get admin error:', error);
-        res.status(500).json({ message: 'Server error' });
+        next(error);
     }
 });
 
-// Update admin profile (name, email) - protected
-router.put('/profile', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.put('/profile', authMiddleware, async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const { name, email } = req.body;
 
         const admin = await Admin.findById(req.adminId);
         if (!admin) {
-            res.status(404).json({ message: 'Admin not found' });
-            return;
+            return res.status(404).json({ message: 'Admin not found' });
         }
 
-        // Check if email is being changed to one that already exists
         if (email && email !== admin.email) {
             const existingAdmin = await Admin.findOne({ email });
             if (existingAdmin) {
-                res.status(400).json({ message: 'Email already in use' });
-                return;
+                return res.status(400).json({ message: 'Email already in use' });
             }
             admin.email = email;
         }
@@ -112,36 +98,30 @@ router.put('/profile', authMiddleware, async (req: AuthRequest, res: Response) =
             },
         });
     } catch (error) {
-        console.error('Update profile error:', error);
-        res.status(500).json({ message: 'Server error' });
+        next(error);
     }
 });
 
-// Change password (protected)
-router.put('/password', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.put('/password', authMiddleware, async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const { currentPassword, newPassword } = req.body;
 
         if (!currentPassword || !newPassword) {
-            res.status(400).json({ message: 'Current password and new password are required' });
-            return;
+            return res.status(400).json({ message: 'Current password and new password are required' });
         }
 
         if (newPassword.length < 6) {
-            res.status(400).json({ message: 'New password must be at least 6 characters' });
-            return;
+            return res.status(400).json({ message: 'New password must be at least 6 characters' });
         }
 
         const admin = await Admin.findById(req.adminId);
         if (!admin) {
-            res.status(404).json({ message: 'Admin not found' });
-            return;
+            return res.status(404).json({ message: 'Admin not found' });
         }
 
         const isPasswordValid = await bcrypt.compare(currentPassword, admin.password);
         if (!isPasswordValid) {
-            res.status(401).json({ message: 'Current password is incorrect' });
-            return;
+            return res.status(401).json({ message: 'Current password is incorrect' });
         }
 
         admin.password = await bcrypt.hash(newPassword, 10);
@@ -149,8 +129,7 @@ router.put('/password', authMiddleware, async (req: AuthRequest, res: Response) 
 
         res.json({ message: 'Password changed successfully' });
     } catch (error) {
-        console.error('Change password error:', error);
-        res.status(500).json({ message: 'Server error' });
+        next(error);
     }
 });
 

@@ -1,21 +1,19 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import Contact from '../models/Contact';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import rateLimit from 'express-rate-limit';
 
 const router = express.Router();
 
-// Strict Rate Limiter for Contact (3 emails per hour)
 const contactLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000, // 1 hour
+    windowMs: 60 * 60 * 1000,
     max: 3,
     message: 'Too many messages sent from this IP, please try again after an hour',
     standardHeaders: true,
     legacyHeaders: false,
 });
 
-// Submit contact form (public)
-router.post('/', contactLimiter, async (req: Request, res: Response) => {
+router.post('/', contactLimiter, async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { name, email, subject, message } = req.body;
 
@@ -33,9 +31,8 @@ router.post('/', contactLimiter, async (req: Request, res: Response) => {
 
         await contact.save();
 
-        // Envoyer email de notification à l'admin
-        // Envoyer email de notification à l'admin
         const { sendContactNotification, sendAutoReply } = await import('../lib/email');
+
         await sendContactNotification({
             name,
             email,
@@ -44,7 +41,6 @@ router.post('/', contactLimiter, async (req: Request, res: Response) => {
             date: contact.createdAt || new Date(),
         });
 
-        // Envoyer accusé de réception au visiteur
         await sendAutoReply({
             name,
             email
@@ -54,27 +50,23 @@ router.post('/', contactLimiter, async (req: Request, res: Response) => {
             message: 'Message envoyé avec succès',
             contact
         });
-    } catch (error: any) {
-        console.error('Error creating contact:', error);
-        res.status(500).json({ message: 'Erreur lors de l\'envoi du message' });
+    } catch (error) {
+        next(error);
     }
 });
 
-// Get all messages (admin only)
-router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.get('/', authMiddleware, async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const messages = await Contact.find()
             .sort({ createdAt: -1 })
             .select('-__v');
         res.json(messages);
     } catch (error) {
-        console.error('Get messages error:', error);
-        res.status(500).json({ message: 'Server error' });
+        next(error);
     }
 });
 
-// Mark message as read (admin only)
-router.patch('/:id/read', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.patch('/:id/read', authMiddleware, async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const message = await Contact.findByIdAndUpdate(
             req.params.id,
@@ -83,19 +75,16 @@ router.patch('/:id/read', authMiddleware, async (req: AuthRequest, res: Response
         ).select('-__v');
 
         if (!message) {
-            res.status(404).json({ message: 'Message not found' });
-            return;
+            return res.status(404).json({ message: 'Message not found' });
         }
 
         res.json(message);
     } catch (error) {
-        console.error('Mark as read error:', error);
-        res.status(500).json({ message: 'Server error' });
+        next(error);
     }
 });
 
-// Mark message as unread (admin only)
-router.patch('/:id/unread', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.patch('/:id/unread', authMiddleware, async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const message = await Contact.findByIdAndUpdate(
             req.params.id,
@@ -104,29 +93,24 @@ router.patch('/:id/unread', authMiddleware, async (req: AuthRequest, res: Respon
         ).select('-__v');
 
         if (!message) {
-            res.status(404).json({ message: 'Message not found' });
-            return;
+            return res.status(404).json({ message: 'Message not found' });
         }
 
         res.json(message);
     } catch (error) {
-        console.error('Mark as unread error:', error);
-        res.status(500).json({ message: 'Server error' });
+        next(error);
     }
 });
 
-// Delete message (admin only)
-router.delete('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.delete('/:id', authMiddleware, async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const message = await Contact.findByIdAndDelete(req.params.id);
         if (!message) {
-            res.status(404).json({ message: 'Message not found' });
-            return;
+            return res.status(404).json({ message: 'Message not found' });
         }
         res.json({ message: 'Message deleted successfully' });
     } catch (error) {
-        console.error('Delete message error:', error);
-        res.status(500).json({ message: 'Server error' });
+        next(error);
     }
 });
 

@@ -15,14 +15,14 @@ import projectRoutes from './routes/projectRoutes';
 import certificationRoutes from './routes/certifications';
 import contactRoutes from './routes/contact';
 import profileRoutes from './routes/profile';
+import { errorHandler } from './middleware/errorHandler';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Trust proxy for Render/proxies
+// Security configuration
 app.set('trust proxy', 1);
 
-// CORS configuration
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   'https://thiam-portfolio.vercel.app',
@@ -32,7 +32,6 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: (origin, callback) => {
-    // allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.some(o => origin.startsWith(o))) {
       callback(null, true);
@@ -43,25 +42,22 @@ app.use(cors({
   credentials: true,
 }));
 
-// Security Middleware
 app.use(helmet());
 
-// Global Rate Limiting
 const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: 'Too many requests from this IP, please try again after 15 minutes',
 });
 app.use('/api', globalLimiter);
 
-// Data Sanitization
 app.use(express.json());
-app.use(mongoSanitizeMiddleware); // Custom sanitizer for Express 5 compatibility
-app.use(hpp()); // Prevent HTTP Parameter Pollution
+app.use(mongoSanitizeMiddleware);
+app.use(hpp());
 
-// Routes
+// API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/experiences', experienceRoutes);
 app.use('/api/projects', projectRoutes);
@@ -69,12 +65,25 @@ app.use('/api/certifications', certificationRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/profile', profileRoutes);
 
-// Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Backend is running' });
 });
 
+// Global Error Handler (must be last)
+app.use(errorHandler);
+
+function validateEnv() {
+  const required = ['MONGODB_URI', 'JWT_SECRET', 'FRONTEND_URL'];
+  const missing = required.filter(key => !process.env[key]);
+
+  if (missing.length > 0) {
+    console.error(`❌ Missing mandatory environment variables: ${missing.join(', ')}`);
+    process.exit(1);
+  }
+}
+
 async function start() {
+  validateEnv();
   await connectToDatabase();
   app.listen(PORT, () => {
     console.log(`🚀 Backend started on http://localhost:${PORT}`);
