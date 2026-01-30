@@ -22,6 +22,27 @@ const PORT = process.env.PORT || 5000;
 // Trust proxy for Render/proxies
 app.set('trust proxy', 1);
 
+// CORS configuration
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'https://thiam-portfolio.vercel.app',
+  'http://localhost:3000',
+  'http://localhost:5173'
+].filter(Boolean) as string[];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.some(o => origin.startsWith(o))) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
+
 // Security Middleware
 app.use(helmet());
 
@@ -39,12 +60,6 @@ app.use('/api', globalLimiter);
 app.use(express.json());
 app.use(mongoSanitizeMiddleware); // Custom sanitizer for Express 5 compatibility
 app.use(hpp()); // Prevent HTTP Parameter Pollution
-
-// CORS configuration
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true,
-}));
 
 // Routes
 app.use('/api/auth', authRoutes);
