@@ -84,6 +84,30 @@ export const apiClient = {
         login: (email: string, password: string) => api.post('/auth/login', { email, password }),
         createAdmin: (data: any) => api.post('/auth/create-admin', data),
     },
+
+    // Blog Posts
+    posts: {
+        getAll: (params?: { page?: number; limit?: number; category?: string; tag?: string; search?: string }) =>
+            api.get('/posts', { params }),
+        getLatest: () => api.get('/posts/latest'),
+        getBySlug: (slug: string) => api.get(`/posts/slug/${slug}`),
+        getRelated: (slug: string) => api.get(`/posts/${slug}/related`),
+        getAllAdmin: () => api.get('/posts/admin/all'),
+        getOneAdmin: (id: string) => api.get(`/posts/admin/${id}`),
+        create: (formData: FormData) =>
+            api.post('/posts', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+        update: (id: string, formData: FormData) =>
+            api.put(`/posts/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+        delete: (id: string) => api.delete(`/posts/${id}`),
+    },
+
+    // Categories
+    categories: {
+        getAll: () => api.get('/categories'),
+        create: (data: any) => api.post('/categories', data),
+        update: (id: string, data: any) => api.put(`/categories/${id}`, data),
+        delete: (id: string) => api.delete(`/categories/${id}`),
+    },
 };
 
 export default api;

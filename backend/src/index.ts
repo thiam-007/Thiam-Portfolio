@@ -15,6 +15,8 @@ import projectRoutes from './routes/projectRoutes';
 import certificationRoutes from './routes/certifications';
 import contactRoutes from './routes/contact';
 import profileRoutes from './routes/profile';
+import postRoutes from './routes/posts';
+import categoryRoutes from './routes/categories';
 import { errorHandler } from './middleware/errorHandler';
 
 const app = express();
@@ -53,7 +55,7 @@ const globalLimiter = rateLimit({
 });
 app.use('/api', globalLimiter);
 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(mongoSanitizeMiddleware);
 app.use(hpp());
 
@@ -64,6 +66,8 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/certifications', certificationRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/posts', postRoutes);
+app.use('/api/categories', categoryRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Backend is running' });

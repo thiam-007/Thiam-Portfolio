@@ -73,6 +73,10 @@ export default function Navigation() {
                     <a href="/#projects" className="nav-link">Projets</a>
                     <a href="/#certifications" className="nav-link">Certifications</a>
                     <a href="/#contact" className="nav-link">Contact</a>
+                    <Link href="/blog" className="nav-link flex items-center gap-1.5">
+                        <i className="fas fa-pen-nib text-xs" aria-hidden="true"></i>
+                        Blog
+                    </Link>
                     {cvUrl && (
                         <a
                             href={cvUrl}
@@ -126,6 +130,14 @@ export default function Navigation() {
                         <a href="/#contact" className="block py-2" onClick={() => setIsMobileMenuOpen(false)}>
                             Contact
                         </a>
+                        <Link
+                            href="/blog"
+                            className="block py-2 flex items-center gap-1.5"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                            <i className="fas fa-pen-nib text-xs" aria-hidden="true"></i>
+                            Blog
+                        </Link>
                         {cvUrl && (
                             <a
                                 href={cvUrl}
