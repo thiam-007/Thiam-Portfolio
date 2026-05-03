@@ -29,10 +29,11 @@ body {
 }
 
 .dark-mode {
-  --primary: #e6f1ff;
-  --secondary: #cfd9ea;
-  --text: #0a192f;
-  --gray: #112240;
+  --primary: #f8f4ee;
+  --secondary: #ede8df;
+  --accent: #b8892e;
+  --text: #1c2035;
+  --gray: #4a5068;
 }
 
 /* Typography */
