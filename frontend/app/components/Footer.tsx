@@ -58,6 +58,9 @@ export default function Footer() {
                         <Link href="/#certifications" className="text-sm hover:text-[var(--accent)]">
                             Certifications
                         </Link>
+                        <Link href="/blog" className="text-sm hover:text-[var(--accent)]">
+                            Blog
+                        </Link>
                         <Link href="/#contact" className="text-sm hover:text-[var(--accent)]">
                             Contact
                         </Link>

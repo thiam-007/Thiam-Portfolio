@@ -87,3 +87,46 @@ export interface AuthResponse {
     token: string;
     admin: Admin;
 }
+
+// Blog Types
+export interface Category {
+    _id: string;
+    name: string;
+    slug: string;
+    description?: string;
+    color: string;
+    articleCount?: number;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface Post {
+    _id: string;
+    title: string;
+    slug: string;
+    content: string;
+    excerpt?: string;
+    coverImage?: string;
+    category?: Category;
+    tags: string[];
+    author: string;
+    status: 'draft' | 'published';
+    views: number;
+    readTime: number;
+    isPinned: boolean;
+    metaTitle?: string;
+    metaDescription?: string;
+    publishedAt?: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface PostsResponse {
+    posts: Post[];
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        pages: number;
+    };
+}

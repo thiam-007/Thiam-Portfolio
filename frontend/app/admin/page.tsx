@@ -104,6 +104,28 @@ export default function AdminDashboard() {
                         </div>
                     </Link>
 
+                    <Link href="/admin/blog" className="admin-card hover:bg-[var(--secondary)]/80 transition-colors block cursor-pointer border-t-2 border-t-[var(--accent)]">
+                        <h3 className="text-xl font-semibold mb-4 text-[var(--accent)]">
+                            <i className="fas fa-pen-nib mr-2"></i>
+                            Blog — Articles
+                        </h3>
+                        <p className="text-[var(--gray)] mb-4">Gérez vos articles de blog</p>
+                        <div className="text-sm text-[var(--gray)] mb-4">
+                            Créer, modifier, publier des articles
+                        </div>
+                    </Link>
+
+                    <Link href="/admin/categories" className="admin-card hover:bg-[var(--secondary)]/80 transition-colors block cursor-pointer border-t-2 border-t-[var(--accent)]">
+                        <h3 className="text-xl font-semibold mb-4 text-[var(--accent)]">
+                            <i className="fas fa-tags mr-2"></i>
+                            Blog — Catégories
+                        </h3>
+                        <p className="text-[var(--gray)] mb-4">Gérez les catégories</p>
+                        <div className="text-sm text-[var(--gray)] mb-4">
+                            Créer et organiser les catégories
+                        </div>
+                    </Link>
+
                     <Link href="/" className="admin-card hover:bg-[var(--secondary)]/80 transition-colors block cursor-pointer">
                         <h3 className="text-xl font-semibold mb-4 text-[var(--accent)]">
                             <i className="fas fa-home mr-2"></i>

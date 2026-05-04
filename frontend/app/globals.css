@@ -3,11 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --primary: #0a192f;
-  --secondary: #112240;
-  --accent: #cca354;
-  --text: #e6f1ff;
-  --gray: #8892b0;
+  /* ── Dark mode (défaut) — Marine profond + or prestige ── */
+  --primary: #05101f;
+  --secondary: #0b1d35;
+  --accent: #c9a84c;
+  --text: #dce8fa;
+  --gray: #7a8ba6;
 }
 
 * {
@@ -29,10 +30,12 @@ body {
 }
 
 .dark-mode {
-  --primary: #e6f1ff;
-  --secondary: #cfd9ea;
-  --text: #0a192f;
-  --gray: #112240;
+  /* Light mode — Bleu institutionnel, cabinets de conseil */
+  --primary: #f0f5fb;
+  --secondary: #e4edf8;
+  --accent: #b8892e;
+  --text: #0d1e35;
+  --gray: #4a5a72;
 }
 
 /* Typography */
