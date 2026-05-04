@@ -74,12 +74,12 @@ export default function Projects() {
                                 href={`/projects/${project._id}`}
                                 className="group flex flex-col h-full bg-[var(--secondary)] rounded-xl overflow-hidden border border-transparent hover:border-[var(--accent)] hover:border-opacity-40 transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-[var(--accent)]/5"
                             >
-                                {/* Image — réduite */}
-                                <div className="h-36 overflow-hidden flex-shrink-0">
+                                {/* Image — hauteur équilibrée */}
+                                <div className="h-44 overflow-hidden flex-shrink-0">
                                     <img
                                         src={project.cover_url || 'https://via.placeholder.com/400x200'}
                                         alt={project.title}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                                     />
                                 </div>
 
