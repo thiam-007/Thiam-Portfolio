@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import useSWR from 'swr';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -14,7 +14,6 @@ const fetcher = (url: string) => fetch(url).then((r) => { if (!r.ok) throw new E
 
 export default function ProjectDetailPage() {
     const { id } = useParams<{ id: string }>();
-    const router = useRouter();
 
     const { data: project, error, isLoading } = useSWR<Project>(
         id ? `${API_URL}/api/projects/${id}` : null,
@@ -22,9 +21,12 @@ export default function ProjectDetailPage() {
         { revalidateOnFocus: false }
     );
 
-    const { data: allProjects } = useSWR<Project[]>(`${API_URL}/api/projects`, fetcher, { revalidateOnFocus: false });
+    const { data: allProjects } = useSWR<Project[]>(
+        `${API_URL}/api/projects`,
+        fetcher,
+        { revalidateOnFocus: false }
+    );
 
-    // Adjacent projects for prev/next navigation
     const idx = allProjects?.findIndex((p) => p._id === id) ?? -1;
     const prevProject = idx > 0 ? allProjects![idx - 1] : null;
     const nextProject = allProjects && idx < allProjects.length - 1 ? allProjects[idx + 1] : null;
@@ -32,7 +34,7 @@ export default function ProjectDetailPage() {
     if (isLoading) {
         return (
             <div className="min-h-screen bg-[var(--primary)] flex items-center justify-center">
-                <div className="w-10 h-10 border-2 border-[var(--accent)] border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-10 h-10 border-2 border-[var(--accent)] border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
@@ -42,7 +44,7 @@ export default function ProjectDetailPage() {
             <div className="min-h-screen bg-[var(--primary)]">
                 <Navigation />
                 <div className="flex flex-col items-center justify-center pt-40 text-[var(--gray)]">
-                    <i className="fas fa-folder-open text-5xl mb-4 opacity-30"></i>
+                    <i className="fas fa-folder-open text-5xl mb-4 opacity-30" />
                     <p className="text-xl font-semibold mb-2">Projet introuvable</p>
                     <Link href="/projects" className="text-[var(--accent)] hover:underline text-sm mt-2">
                         ← Retour aux projets
@@ -54,53 +56,58 @@ export default function ProjectDetailPage() {
     }
 
     const projectUrl = project.project_url || project.link;
+    const description = project.fullDescription || project.description;
+    const hasShortAndLong =
+        project.fullDescription &&
+        project.description &&
+        project.fullDescription !== project.description;
 
     return (
         <div className="min-h-screen bg-[var(--primary)]">
             <Navigation />
 
             <main className="pt-24 pb-20">
-                {/* Hero cover image */}
-                {project.cover_url && (
-                    <div className="relative w-full h-64 md:h-[420px] overflow-hidden">
-                        <img
-                            src={project.cover_url}
-                            alt={project.title}
-                            className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary)] via-[var(--primary)]/50 to-transparent" />
-                    </div>
-                )}
+                <div className="container mx-auto px-6 max-w-5xl">
 
-                <div className="container mx-auto px-6 max-w-4xl">
-                    <div className={project.cover_url ? '-mt-16 relative z-10' : 'mt-8'}>
-                        <Breadcrumbs
-                            items={[
-                                { label: 'Accueil', href: '/' },
-                                { label: 'Projets', href: '/projects' },
-                                { label: project.title },
-                            ]}
-                        />
+                    {/* ── Breadcrumbs ── */}
+                    <Breadcrumbs
+                        items={[
+                            { label: 'Accueil', href: '/' },
+                            { label: 'Projets', href: '/projects' },
+                            { label: project.title },
+                        ]}
+                    />
 
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5 }}
-                        >
-                            {/* Title & tags */}
-                            <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
-                                <h1 className="text-3xl md:text-4xl font-bold leading-tight">
+                    <motion.div
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.45 }}
+                    >
+                        {/* ── Header compact ── */}
+                        <div className="mb-8">
+                            {/* Accent line */}
+                            <div className="flex items-center gap-3 mb-3">
+                                <span className="block w-8 h-0.5 bg-[var(--accent)]" />
+                                <span className="text-[var(--accent)] text-xs font-mono uppercase tracking-widest">
+                                    Projet
+                                </span>
+                            </div>
+
+                            <div className="flex flex-wrap items-start justify-between gap-4">
+                                <h1 className="text-2xl md:text-3xl font-bold leading-snug max-w-xl">
                                     {project.title}
                                 </h1>
-                                <div className="flex gap-3">
+
+                                {/* CTA buttons */}
+                                <div className="flex gap-2 flex-wrap">
                                     {projectUrl && (
                                         <a
                                             href={projectUrl}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="btn-primary inline-flex items-center gap-2 text-sm py-2 px-5"
+                                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--accent)] text-[var(--accent)] text-sm font-medium hover:bg-[var(--accent)] hover:text-[#0a192f] transition-all duration-200"
                                         >
-                                            <i className="fas fa-external-link-alt"></i>
+                                            <i className="fas fa-external-link-alt text-xs" />
                                             Voir le projet
                                         </a>
                                     )}
@@ -109,67 +116,91 @@ export default function ProjectDetailPage() {
                                             href={project.githubLink}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="btn-primary inline-flex items-center gap-2 text-sm py-2 px-5"
+                                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--accent)] border-opacity-30 text-[var(--gray)] text-sm font-medium hover:border-opacity-70 hover:text-[var(--accent)] transition-all duration-200"
                                         >
-                                            <i className="fab fa-github"></i>
+                                            <i className="fab fa-github text-xs" />
                                             Code source
                                         </a>
                                     )}
                                 </div>
                             </div>
 
-                            {/* Tech stack */}
+                            {/* Tech tags inline with title */}
                             {project.tech && project.tech.length > 0 && (
-                                <div className="flex flex-wrap gap-2 mb-8">
+                                <div className="flex flex-wrap gap-2 mt-4">
                                     {project.tech.map((t, i) => (
                                         <span key={i} className="tag">{t}</span>
                                     ))}
                                 </div>
                             )}
+                        </div>
 
-                            {/* Cover image (if no hero) */}
-                            {!project.cover_url && (
-                                <div className="w-full h-64 rounded-xl overflow-hidden mb-8 bg-[var(--secondary)] flex items-center justify-center border border-[var(--accent)] border-opacity-10">
-                                    <i className="fas fa-folder-open text-5xl text-[var(--accent)] opacity-20"></i>
-                                </div>
-                            )}
+                        {/* ── Main layout: content left + sidebar right ── */}
+                        <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
 
-                            {/* Content grid */}
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-4">
-                                {/* Main description */}
-                                <div className="lg:col-span-2 space-y-6">
-                                    {project.description && (
-                                        <div className="bg-[var(--secondary)] rounded-xl p-6 border border-[var(--accent)] border-opacity-10">
-                                            <h2 className="text-[var(--accent)] font-semibold mb-3 flex items-center gap-2 text-sm uppercase tracking-wider">
-                                                <i className="fas fa-info-circle"></i> Résumé
-                                            </h2>
-                                            <p className="text-[var(--gray)] leading-relaxed">
-                                                {project.description}
-                                            </p>
+                            {/* Left — content */}
+                            <div className="flex-1 min-w-0 space-y-6">
+
+                                {/* Short description as lead paragraph */}
+                                {project.description && (
+                                    <p className="text-base md:text-lg leading-relaxed text-[var(--gray)] border-l-2 border-[var(--accent)] pl-4">
+                                        {project.description}
+                                    </p>
+                                )}
+
+                                {/* Full description as flowing prose */}
+                                {hasShortAndLong && (
+                                    <div className="space-y-3">
+                                        <h2 className="text-xs font-bold text-[var(--accent)] uppercase tracking-wider flex items-center gap-2">
+                                            <i className="fas fa-align-left" /> Détails du projet
+                                        </h2>
+                                        <div className="text-sm md:text-base leading-loose text-[var(--gray)] whitespace-pre-wrap">
+                                            {project.fullDescription}
                                         </div>
-                                    )}
+                                    </div>
+                                )}
 
-                                    {project.fullDescription && project.fullDescription !== project.description && (
-                                        <div className="bg-[var(--secondary)] rounded-xl p-6 border border-[var(--accent)] border-opacity-10">
-                                            <h2 className="text-[var(--accent)] font-semibold mb-3 flex items-center gap-2 text-sm uppercase tracking-wider">
-                                                <i className="fas fa-file-lines"></i> Description complète
-                                            </h2>
-                                            <p className="text-[var(--gray)] leading-relaxed whitespace-pre-wrap">
-                                                {project.fullDescription}
-                                            </p>
-                                        </div>
-                                    )}
-                                </div>
+                                {/* Tags */}
+                                {project.tags && project.tags.length > 0 && (
+                                    <div className="flex flex-wrap gap-2 pt-2">
+                                        {project.tags.map((t, i) => (
+                                            <span
+                                                key={i}
+                                                className="text-xs px-2.5 py-1 rounded-full bg-[var(--secondary)] text-[var(--gray)] border border-[var(--accent)] border-opacity-15"
+                                            >
+                                                #{t}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
 
-                                {/* Sidebar info */}
-                                <aside className="space-y-4">
-                                    {/* Tech details */}
+                            {/* Right — sticky sidebar */}
+                            <aside className="lg:w-72 flex-shrink-0">
+                                <div className="lg:sticky lg:top-24 space-y-5">
+
+                                    {/* Project image — compact, in sidebar */}
+                                    <div className="rounded-xl overflow-hidden border border-[var(--accent)] border-opacity-15 shadow-lg">
+                                        {project.cover_url ? (
+                                            <img
+                                                src={project.cover_url}
+                                                alt={project.title}
+                                                className="w-full h-48 object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-40 bg-[var(--secondary)] flex items-center justify-center">
+                                                <i className="fas fa-folder-open text-4xl text-[var(--accent)] opacity-20" />
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Technologies */}
                                     {project.tech && project.tech.length > 0 && (
-                                        <div className="bg-[var(--secondary)] rounded-xl p-5 border border-[var(--accent)] border-opacity-10">
+                                        <div className="bg-[var(--secondary)] rounded-xl p-4 border border-[var(--accent)] border-opacity-10">
                                             <h3 className="text-xs font-bold text-[var(--accent)] uppercase tracking-wider mb-3 flex items-center gap-2">
-                                                <i className="fas fa-code"></i> Technologies
+                                                <i className="fas fa-code" /> Technologies
                                             </h3>
-                                            <div className="flex flex-wrap gap-2">
+                                            <div className="flex flex-wrap gap-1.5">
                                                 {project.tech.map((t, i) => (
                                                     <span key={i} className="tag text-xs">{t}</span>
                                                 ))}
@@ -177,83 +208,83 @@ export default function ProjectDetailPage() {
                                         </div>
                                     )}
 
-                                    {/* Tags */}
-                                    {project.tags && project.tags.length > 0 && (
-                                        <div className="bg-[var(--secondary)] rounded-xl p-5 border border-[var(--accent)] border-opacity-10">
-                                            <h3 className="text-xs font-bold text-[var(--accent)] uppercase tracking-wider mb-3 flex items-center gap-2">
-                                                <i className="fas fa-tags"></i> Tags
-                                            </h3>
-                                            <div className="flex flex-wrap gap-2">
-                                                {project.tags.map((t, i) => (
-                                                    <span key={i} className="text-xs px-2 py-1 rounded bg-[var(--primary)] text-[var(--gray)] border border-[var(--accent)] border-opacity-15">
-                                                        #{t}
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-
                                     {/* Links */}
                                     {(projectUrl || project.githubLink) && (
-                                        <div className="bg-[var(--secondary)] rounded-xl p-5 border border-[var(--accent)] border-opacity-10 space-y-2">
+                                        <div className="bg-[var(--secondary)] rounded-xl p-4 border border-[var(--accent)] border-opacity-10 space-y-2.5">
                                             <h3 className="text-xs font-bold text-[var(--accent)] uppercase tracking-wider mb-3 flex items-center gap-2">
-                                                <i className="fas fa-link"></i> Liens
+                                                <i className="fas fa-link" /> Liens
                                             </h3>
                                             {projectUrl && (
-                                                <a href={projectUrl} target="_blank" rel="noopener noreferrer"
-                                                    className="flex items-center gap-2 text-sm text-[var(--gray)] hover:text-[var(--accent)] transition-colors">
-                                                    <i className="fas fa-external-link-alt w-4 text-center text-[var(--accent)]"></i>
+                                                <a
+                                                    href={projectUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center gap-2.5 text-sm text-[var(--gray)] hover:text-[var(--accent)] transition-colors group"
+                                                >
+                                                    <span className="w-7 h-7 rounded-lg bg-[var(--primary)] flex items-center justify-center flex-shrink-0 group-hover:bg-[var(--accent)] group-hover:bg-opacity-10 transition-colors">
+                                                        <i className="fas fa-external-link-alt text-[var(--accent)] text-xs" />
+                                                    </span>
                                                     Site du projet
                                                 </a>
                                             )}
                                             {project.githubLink && (
-                                                <a href={project.githubLink} target="_blank" rel="noopener noreferrer"
-                                                    className="flex items-center gap-2 text-sm text-[var(--gray)] hover:text-[var(--accent)] transition-colors">
-                                                    <i className="fab fa-github w-4 text-center text-[var(--accent)]"></i>
+                                                <a
+                                                    href={project.githubLink}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center gap-2.5 text-sm text-[var(--gray)] hover:text-[var(--accent)] transition-colors group"
+                                                >
+                                                    <span className="w-7 h-7 rounded-lg bg-[var(--primary)] flex items-center justify-center flex-shrink-0 group-hover:bg-[var(--accent)] group-hover:bg-opacity-10 transition-colors">
+                                                        <i className="fab fa-github text-[var(--accent)] text-xs" />
+                                                    </span>
                                                     GitHub
                                                 </a>
                                             )}
                                         </div>
                                     )}
-                                </aside>
-                            </div>
-                        </motion.div>
-                    </div>
-                </div>
+                                </div>
+                            </aside>
+                        </div>
+                    </motion.div>
 
-                {/* Prev / Next navigation */}
-                {(prevProject || nextProject) && (
-                    <div className="container mx-auto px-6 max-w-4xl mt-16">
-                        <div className="border-t border-[var(--accent)] border-opacity-15 pt-10 grid grid-cols-2 gap-4">
+                    {/* ── Prev / Next ── */}
+                    {(prevProject || nextProject) && (
+                        <div className="mt-16 pt-8 border-t border-[var(--accent)] border-opacity-15 grid grid-cols-2 gap-4">
                             <div>
                                 {prevProject && (
-                                    <Link href={`/projects/${prevProject._id}`}
-                                        className="group flex flex-col gap-1 p-4 rounded-xl bg-[var(--secondary)] border border-[var(--accent)] border-opacity-10 hover:border-opacity-40 transition-all">
-                                        <span className="text-xs text-[var(--gray)] flex items-center gap-1">
-                                            <i className="fas fa-chevron-left"></i> Projet précédent
-                                        </span>
-                                        <span className="font-semibold text-sm group-hover:text-[var(--accent)] transition-colors line-clamp-1">
-                                            {prevProject.title}
-                                        </span>
+                                    <Link
+                                        href={`/projects/${prevProject._id}`}
+                                        className="group flex items-center gap-3 p-4 rounded-xl bg-[var(--secondary)] border border-[var(--accent)] border-opacity-10 hover:border-opacity-40 transition-all"
+                                    >
+                                        <i className="fas fa-chevron-left text-[var(--accent)] text-xs flex-shrink-0" />
+                                        <div className="min-w-0">
+                                            <p className="text-xs text-[var(--gray)] mb-0.5">Précédent</p>
+                                            <p className="text-sm font-semibold group-hover:text-[var(--accent)] transition-colors truncate">
+                                                {prevProject.title}
+                                            </p>
+                                        </div>
                                     </Link>
                                 )}
                             </div>
                             <div>
                                 {nextProject && (
-                                    <Link href={`/projects/${nextProject._id}`}
-                                        className="group flex flex-col gap-1 p-4 rounded-xl bg-[var(--secondary)] border border-[var(--accent)] border-opacity-10 hover:border-opacity-40 transition-all text-right">
-                                        <span className="text-xs text-[var(--gray)] flex items-center justify-end gap-1">
-                                            Projet suivant <i className="fas fa-chevron-right"></i>
-                                        </span>
-                                        <span className="font-semibold text-sm group-hover:text-[var(--accent)] transition-colors line-clamp-1">
-                                            {nextProject.title}
-                                        </span>
+                                    <Link
+                                        href={`/projects/${nextProject._id}`}
+                                        className="group flex items-center justify-end gap-3 p-4 rounded-xl bg-[var(--secondary)] border border-[var(--accent)] border-opacity-10 hover:border-opacity-40 transition-all text-right"
+                                    >
+                                        <div className="min-w-0">
+                                            <p className="text-xs text-[var(--gray)] mb-0.5">Suivant</p>
+                                            <p className="text-sm font-semibold group-hover:text-[var(--accent)] transition-colors truncate">
+                                                {nextProject.title}
+                                            </p>
+                                        </div>
+                                        <i className="fas fa-chevron-right text-[var(--accent)] text-xs flex-shrink-0" />
                                     </Link>
                                 )}
                             </div>
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
             </main>
 
             <Footer />
