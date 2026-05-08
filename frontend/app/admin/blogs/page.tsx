@@ -448,7 +448,7 @@ export default function AdminBlogs() {
                                     Annuler
                                 </button>
                                 <button type="submit" className="btn-primary">
-                                    {form._id ? 'Mettre à jour' : 'Créer l'article'}
+                                    {form._id ? 'Mettre à jour' : "Créer l'article"}
                                 </button>
                             </div>
                         </form>
