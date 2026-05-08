@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 :root {
-  /* ── Dark mode (défaut) — Marine profond + or prestige ── */
-  --primary: #05101f;
-  --secondary: #0b1d35;
-  --accent: #c9a84c;
-  --text: #dce8fa;
-  --gray: #7a8ba6;
+  /* ── Dark mode (défaut) — Cabinet stratégie premium ── */
+  --primary: #05101f;       /* Marine très profond */
+  --secondary: #0a1f3d;     /* Marine cards — légèrement plus clair */
+  --accent: #c9a84c;        /* Or prestige */
+  --text: #dce8fa;          /* Blanc-bleu doux */
+  --gray: #7a92b2;          /* Gris bleuté sous-textes */
 }
 
 * {
@@ -29,13 +29,13 @@ body {
   color: var(--text);
 }
 
+/* ── Light mode (toggle soleil) — Codes visuels banque / consulting ── */
 .dark-mode {
-  /* Light mode — Bleu institutionnel, cabinets de conseil */
-  --primary: #f0f5fb;
-  --secondary: #e4edf8;
-  --accent: #b8892e;
-  --text: #0d1e35;
-  --gray: #4a5a72;
+  --primary: #f0f5fb;       /* Bleu institutionnel clair */
+  --secondary: #dce8fa;     /* Fond cards light */
+  --accent: #b8892e;        /* Or soutenu visible sur fond clair */
+  --text: #0d1e35;          /* Texte marine autoritaire */
+  --gray: #4a6080;          /* Gris foncé lisible */
 }
 
 /* Typography */
@@ -47,9 +47,6 @@ h5,
 h6 {
   font-weight: 600;
 }
-
-/* Reveal Animations */
-/* Reveal Animations - REMOVED (Replaced by Framer Motion) */
 
 /* Timeline Styles */
 .timeline-item {
@@ -85,12 +82,12 @@ h6 {
 
 .project-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 30px rgba(201, 168, 76, 0.12);
 }
 
 /* Tags */
 .tag {
-  background-color: rgba(204, 163, 84, 0.15);
+  background-color: rgba(201, 168, 76, 0.15);
   color: var(--accent);
   border-radius: 9999px;
   padding: 0.25rem 0.75rem;
@@ -112,7 +109,7 @@ h6 {
 }
 
 .btn-primary:hover {
-  background-color: rgba(204, 163, 84, 0.1);
+  background-color: rgba(201, 168, 76, 0.1);
 }
 
 .btn-outline {
@@ -155,7 +152,7 @@ h6 {
 
 /* Loading Spinner */
 .spinner {
-  border: 3px solid rgba(204, 163, 84, 0.3);
+  border: 3px solid rgba(201, 168, 76, 0.3);
   border-radius: 50%;
   border-top: 3px solid var(--accent);
   width: 24px;
@@ -164,13 +161,8 @@ h6 {
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Modal Styles */
@@ -180,18 +172,15 @@ h6 {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.75);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 50;
-  /* Opacity controlled by Framer Motion */
-  /* transition: opacity 0.3s ease; -- REMOVED */
   pointer-events: none;
 }
 
 .modal.active {
-  /* opacity: 1; -- Controlled by Framer Motion */
   pointer-events: all;
 }
 
@@ -203,13 +192,8 @@ h6 {
   max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
-  /* Transform controlled by Framer Motion */
-  /* transition: transform 0.3s ease; -- REMOVED */
+  animation: modalIn 0.3s ease-out;
 }
-
-/* .modal.active .modal-content {
-  transform: translateY(0);
-} -- REMOVED */
 
 /* Typing Cursor Animation */
 .typing-cursor {
@@ -217,55 +201,28 @@ h6 {
 }
 
 @keyframes blink {
-
-  0%,
-  50% {
-    opacity: 1;
-  }
-
-  51%,
-  100% {
-    opacity: 0;
-  }
+  0%,  50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
 }
 
-/* Pulse Animation */
+/* Animations */
 @keyframes ping {
-
-  75%,
-  100% {
-    transform: scale(2);
-    opacity: 0;
-  }
+  75%, 100% { transform: scale(2); opacity: 0; }
 }
+.animate-ping { animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite; }
 
-.animate-ping {
-  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
-}
-
-/* Bounce Animation */
 @keyframes bounce {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-10px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
 }
-
-.animate-bounce {
-  animation: bounce 2s infinite;
-}
+.animate-bounce { animation: bounce 2s infinite; }
 
 /* Admin Dashboard Styles */
 .admin-card {
   background-color: var(--secondary);
   border-radius: 8px;
   padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 
 .admin-input {
@@ -283,7 +240,7 @@ h6 {
   border-color: var(--accent);
 }
 
-/* Toast Notifications */
+/* Toast */
 .toast {
   position: fixed;
   bottom: 2rem;
@@ -291,37 +248,12 @@ h6 {
   z-index: 100;
 }
 
-/* Custom Scrollbar for Modals */
-.custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-    background: var(--primary);
-    border-radius: 10px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-    background: var(--accent);
-    border-radius: 10px;
-    opacity: 0.5;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: var(--accent);
-}
-
-.modal-content {
-    animation: modalIn 0.3s ease-out;
-}
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar       { width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: var(--primary); border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; opacity: 0.5; }
 
 @keyframes modalIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
