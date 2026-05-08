@@ -67,6 +67,22 @@ export default function Hero() {
         <section id="hero" className="h-screen flex items-center justify-center relative overflow-hidden">
             <div className="absolute inset-0 z-0">
                 <div className="absolute inset-0 bg-[var(--primary)]"></div>
+                {/* Glow indigo subtil en haut-gauche */}
+                <div
+                    className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full opacity-20 pointer-events-none"
+                    style={{
+                        background: 'radial-gradient(circle, #6366F1 0%, transparent 70%)',
+                        filter: 'blur(60px)',
+                    }}
+                />
+                {/* Glow sky subtil en bas-droite */}
+                <div
+                    className="absolute -bottom-40 -right-40 w-[500px] h-[500px] rounded-full opacity-10 pointer-events-none"
+                    style={{
+                        background: 'radial-gradient(circle, #38BDF8 0%, transparent 70%)',
+                        filter: 'blur(80px)',
+                    }}
+                />
             </div>
 
             <div className="container mx-auto px-6 z-10">

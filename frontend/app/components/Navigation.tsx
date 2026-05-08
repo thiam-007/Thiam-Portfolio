@@ -79,7 +79,7 @@ export default function Navigation() {
                             href={cvUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="px-4 py-2 rounded-md border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-[#0a192f] transition-all duration-300 flex items-center font-medium"
+                            className="px-4 py-2 rounded-md border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-white transition-all duration-300 flex items-center font-medium"
                             aria-label="Download CV"
                         >
                             <i className="fas fa-file-pdf mr-2" aria-hidden="true"></i>

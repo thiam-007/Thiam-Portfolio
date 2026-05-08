@@ -3,13 +3,18 @@
 @tailwind utilities;
 
 :root {
-  --primary: #0a192f;
-  --secondary: #112240;
-  --accent: #cca354;
-  --text: #e6f1ff;
-  --gray: #8892b0;
+  /* Slate & Indigo Pro — palette globale */
+  --primary: #020617;       /* Slate 950 — fond principal */
+  --secondary: #0F172A;     /* Slate 900 — cartes / sections */
+  --surface: #1E293B;       /* Slate 800 — surfaces élevées */
+  --accent: #6366F1;        /* Indigo 500 — accent principal */
+  --accent-hover: #818CF8;  /* Indigo 400 — hover */
+  --accent-sky: #38BDF8;    /* Sky 400 — tags / secondaire */
+  --text: #F8FAFC;          /* Slate 50 — texte principal */
+  --gray: #94A3B8;          /* Slate 400 — texte secondaire */
+  --border: #1E293B;        /* Slate 800 — bordures */
 
-  /* Blog - Slate & Indigo palette */
+  /* Blog (unifié avec la palette principale) */
   --blog-bg: #020617;
   --blog-card: #0F172A;
   --blog-surface: #1E293B;
@@ -18,7 +23,7 @@
   --blog-tag: #38BDF8;
   --blog-text: #F8FAFC;
   --blog-muted: #94A3B8;
-  --blog-border: #334155;
+  --blog-border: #1E293B;
 }
 
 * {
@@ -39,11 +44,26 @@ body {
   color: var(--text);
 }
 
+/* Mode clair (toggle dark mode inverse vers light) */
 .dark-mode {
-  --primary: #e6f1ff;
-  --secondary: #cfd9ea;
-  --text: #0a192f;
-  --gray: #112240;
+  --primary: #F8FAFC;
+  --secondary: #F1F5F9;
+  --surface: #E2E8F0;
+  --accent: #4F46E5;
+  --accent-hover: #4338CA;
+  --accent-sky: #0284C7;
+  --text: #0F172A;
+  --gray: #475569;
+  --border: #CBD5E1;
+  --blog-bg: #F8FAFC;
+  --blog-card: #FFFFFF;
+  --blog-surface: #F1F5F9;
+  --blog-accent: #4F46E5;
+  --blog-accent-hover: #4338CA;
+  --blog-tag: #0284C7;
+  --blog-text: #0F172A;
+  --blog-muted: #475569;
+  --blog-border: #CBD5E1;
 }
 
 /* Typography */
@@ -98,8 +118,9 @@ h6 {
 
 /* Tags */
 .tag {
-  background-color: rgba(204, 163, 84, 0.15);
-  color: var(--accent);
+  background-color: rgba(99, 102, 241, 0.12);
+  color: var(--accent-sky);
+  border: 1px solid rgba(99, 102, 241, 0.25);
   border-radius: 9999px;
   padding: 0.25rem 0.75rem;
   font-size: 0.75rem;
@@ -113,22 +134,24 @@ h6 {
   border: 2px solid var(--accent);
   color: var(--accent);
   padding: 0.75rem 1.5rem;
-  border-radius: 4px;
+  border-radius: 6px;
   font-weight: 500;
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
 .btn-primary:hover {
-  background-color: rgba(204, 163, 84, 0.1);
+  background-color: rgba(99, 102, 241, 0.15);
+  border-color: var(--accent-hover);
+  color: var(--accent-hover);
 }
 
 .btn-outline {
   background-color: transparent;
-  border: 2px solid var(--text);
+  border: 2px solid var(--gray);
   color: var(--text);
   padding: 0.75rem 1.5rem;
-  border-radius: 4px;
+  border-radius: 6px;
   font-weight: 500;
   transition: all 0.3s ease;
   cursor: pointer;
@@ -161,9 +184,13 @@ h6 {
   width: 100%;
 }
 
+.nav-link:hover {
+  color: var(--accent);
+}
+
 /* Loading Spinner */
 .spinner {
-  border: 3px solid rgba(204, 163, 84, 0.3);
+  border: 3px solid rgba(99, 102, 241, 0.25);
   border-radius: 50%;
   border-top: 3px solid var(--accent);
   width: 24px;
@@ -271,17 +298,24 @@ h6 {
 /* Admin Dashboard Styles */
 .admin-card {
   background-color: var(--secondary);
-  border-radius: 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
   padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.12);
 }
 
 .admin-input {
   width: 100%;
   padding: 0.75rem;
   background-color: var(--primary);
-  border: 1px solid var(--gray);
-  border-radius: 4px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
   color: var(--text);
   outline: none;
   transition: border-color 0.3s ease;
@@ -289,6 +323,7 @@ h6 {
 
 .admin-input:focus {
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }
 
 /* Toast Notifications */
@@ -299,7 +334,24 @@ h6 {
   z-index: 100;
 }
 
-/* Custom Scrollbar for Modals */
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--surface);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+}
+
 .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
 }
@@ -310,9 +362,8 @@ h6 {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: var(--accent);
+    background: var(--surface);
     border-radius: 10px;
-    opacity: 0.5;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
