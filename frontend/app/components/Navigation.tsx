@@ -88,7 +88,7 @@ export default function Navigation() {
                     )}
                     <button
                         onClick={toggleDarkMode}
-                        className="p-2 rounded-full hover:bg-gray-700/20"
+                        className="p-2 rounded-full hover:bg-[var(--surface)]"
                         aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
                     >
                         <i className={`fas fa-${isDarkMode ? 'sun' : 'moon'}`} aria-hidden="true"></i>

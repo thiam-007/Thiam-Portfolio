@@ -263,7 +263,7 @@ export default function AdminExperiences() {
                                 <button
                                     type="button"
                                     onClick={() => setIsEditing(false)}
-                                    className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-700"
+                                    className="px-4 py-2 rounded bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--text)]"
                                 >
                                     Annuler
                                 </button>
