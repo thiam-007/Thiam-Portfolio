@@ -25,11 +25,21 @@ function formatDate(dateStr?: string) {
 
 const POSTS_PER_PAGE = 6;
 
+const TOPICS = [
+    { label: 'Développement Web', icon: 'fas fa-code' },
+    { label: 'Gestion de Projet', icon: 'fas fa-tasks' },
+    { label: 'Stratégie', icon: 'fas fa-chess' },
+    { label: 'Entrepreneuriat', icon: 'fas fa-rocket' },
+    { label: 'Architecture Logicielle', icon: 'fas fa-sitemap' },
+    { label: 'Full Stack', icon: 'fas fa-layer-group' },
+];
+
 export default function BlogPage() {
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
     const [currentPage, setCurrentPage] = useState(1);
 
     const { data: blogs, error } = useSWR<Blog[]>(`${API_URL}/api/blogs`, fetcher);
+    const { data: profile } = useSWR(`${API_URL}/api/profile`, fetcher);
 
     const categories = blogs
         ? ['all', ...Array.from(new Set(blogs.map((b) => b.category)))]
@@ -51,58 +61,252 @@ export default function BlogPage() {
         setCurrentPage(1);
     };
 
+    const totalArticles = blogs?.length ?? 0;
+    const totalCategories = blogs ? new Set(blogs.map((b) => b.category)).size : 0;
+    const avgReadTime = blogs && blogs.length > 0
+        ? Math.round(blogs.reduce((acc, b) => acc + b.readTime, 0) / blogs.length)
+        : 0;
+
+    const avatarUrl = profile?.profileImageUrl || '/IMG_1945.jpg';
+    const linkedin = profile?.socialLinks?.linkedin || 'https://www.linkedin.com/in/cheick-ahmed-thiam-a72385226';
+    const github = profile?.socialLinks?.github || 'https://github.com/thiam-007';
+
     return (
         <main style={{ backgroundColor: 'var(--blog-bg)', minHeight: '100vh' }}>
-            {/* Hero */}
-            <section
-                className="relative py-28 px-6"
-                style={{
-                    background:
-                        'linear-gradient(180deg, rgba(99,102,241,0.08) 0%, var(--blog-bg) 100%)',
-                    borderBottom: '1px solid var(--blog-border)',
-                }}
-            >
-                <div className="container mx-auto text-center">
+
+            {/* ── BANNER ───────────────────────────────────────────── */}
+            <section className="relative overflow-hidden">
+                {/* Background layers */}
+                <div
+                    className="absolute inset-0"
+                    style={{
+                        background: 'linear-gradient(160deg, #020617 0%, #0a0520 50%, #020617 100%)',
+                    }}
+                />
+                {/* Dot grid */}
+                <div
+                    className="absolute inset-0 opacity-[0.04]"
+                    style={{
+                        backgroundImage: 'radial-gradient(circle, #6366F1 1px, transparent 1px)',
+                        backgroundSize: '32px 32px',
+                    }}
+                />
+                {/* Indigo glow top-center */}
+                <div
+                    className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full pointer-events-none"
+                    style={{
+                        background: 'radial-gradient(ellipse, rgba(99,102,241,0.18) 0%, transparent 70%)',
+                        filter: 'blur(40px)',
+                    }}
+                />
+                {/* Sky glow bottom-right */}
+                <div
+                    className="absolute bottom-0 right-0 w-96 h-96 pointer-events-none"
+                    style={{
+                        background: 'radial-gradient(circle, rgba(56,189,248,0.08) 0%, transparent 70%)',
+                        filter: 'blur(60px)',
+                    }}
+                />
+
+                <div className="relative container mx-auto px-6 pt-10 pb-16">
+                    {/* Back link */}
                     <Link
                         href="/"
-                        className="inline-flex items-center gap-2 text-sm mb-8 transition-colors"
+                        className="inline-flex items-center gap-2 text-sm mb-12 transition-colors hover:underline"
                         style={{ color: 'var(--blog-muted)' }}
                     >
-                        <i className="fas fa-arrow-left" />
+                        <i className="fas fa-arrow-left text-xs" />
                         Retour au portfolio
                     </Link>
+
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
+                        className="flex flex-col items-center text-center"
+                        initial={{ opacity: 0, y: 24 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
+                        transition={{ duration: 0.7 }}
                     >
-                        <span
-                            className="inline-block px-4 py-1.5 rounded-full text-xs font-semibold tracking-widest uppercase mb-6"
-                            style={{
-                                backgroundColor: 'rgba(99,102,241,0.12)',
-                                color: 'var(--blog-accent)',
-                                border: '1px solid rgba(99,102,241,0.3)',
-                            }}
+                        {/* Avatar */}
+                        <motion.div
+                            className="relative mb-6"
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ duration: 0.6, delay: 0.1 }}
                         >
-                            Blog
-                        </span>
-                        <h1
-                            className="text-5xl md:text-6xl font-bold mb-5 leading-tight"
+                            {/* Animated ring */}
+                            <motion.div
+                                className="absolute inset-0 rounded-full"
+                                style={{ border: '2px solid rgba(99,102,241,0.4)' }}
+                                animate={{ scale: [1, 1.12, 1], opacity: [0.5, 0.15, 0.5] }}
+                                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                            />
+                            <div
+                                className="w-24 h-24 rounded-full overflow-hidden"
+                                style={{ border: '3px solid var(--blog-accent)', boxShadow: '0 0 30px rgba(99,102,241,0.35)' }}
+                            >
+                                <img
+                                    src={avatarUrl}
+                                    alt="Cheick Ahmed Thiam"
+                                    className="w-full h-full object-cover"
+                                    style={{ objectPosition: 'center top' }}
+                                />
+                            </div>
+                            {/* Online dot */}
+                            <span
+                                className="absolute bottom-1 right-1 w-4 h-4 rounded-full border-2"
+                                style={{
+                                    backgroundColor: '#10B981',
+                                    borderColor: 'var(--blog-bg)',
+                                }}
+                            />
+                        </motion.div>
+
+                        {/* Name */}
+                        <motion.h1
+                            className="text-3xl md:text-4xl font-bold mb-2"
                             style={{ color: 'var(--blog-text)' }}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
                         >
-                            Articles &{' '}
-                            <span style={{ color: 'var(--blog-accent)' }}>Réflexions</span>
-                        </h1>
-                        <p
-                            className="text-lg max-w-2xl mx-auto leading-relaxed"
+                            Cheick Ahmed{' '}
+                            <span style={{ color: 'var(--blog-accent)' }}>Thiam</span>
+                        </motion.h1>
+
+                        {/* Role pills */}
+                        <motion.div
+                            className="flex flex-wrap justify-center gap-2 mb-5"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.3 }}
+                        >
+                            {['Consultant Stratégie', 'Développeur Full Stack', 'Expert PM'].map((role) => (
+                                <span
+                                    key={role}
+                                    className="px-3 py-1 rounded-full text-xs font-semibold"
+                                    style={{
+                                        backgroundColor: 'rgba(99,102,241,0.1)',
+                                        color: 'var(--blog-accent)',
+                                        border: '1px solid rgba(99,102,241,0.25)',
+                                    }}
+                                >
+                                    {role}
+                                </span>
+                            ))}
+                        </motion.div>
+
+                        {/* Separator */}
+                        <div
+                            className="w-16 h-px mb-6"
+                            style={{ background: 'linear-gradient(90deg, transparent, var(--blog-accent), transparent)' }}
+                        />
+
+                        {/* Blog tagline */}
+                        <motion.p
+                            className="text-base md:text-lg max-w-2xl leading-relaxed mb-8"
                             style={{ color: 'var(--blog-muted)' }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.4 }}
                         >
-                            Développement web, architecture logicielle et retours d&apos;expérience
-                            du terrain.
-                        </p>
+                            Bienvenue dans mon espace de réflexion — je partage mes expériences sur le
+                            développement, la stratégie produit et la gestion de projets tech.
+                        </motion.p>
+
+                        {/* Topics */}
+                        <motion.div
+                            className="flex flex-wrap justify-center gap-2 mb-8"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.5 }}
+                        >
+                            {TOPICS.map((t) => (
+                                <span
+                                    key={t.label}
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium"
+                                    style={{
+                                        backgroundColor: 'var(--blog-surface)',
+                                        color: 'var(--blog-muted)',
+                                        border: '1px solid var(--blog-border)',
+                                    }}
+                                >
+                                    <i className={`${t.icon} text-[10px]`} style={{ color: 'var(--blog-tag)' }} />
+                                    {t.label}
+                                </span>
+                            ))}
+                        </motion.div>
+
+                        {/* Stats */}
+                        {blogs && (
+                            <motion.div
+                                className="flex flex-wrap justify-center gap-6 mb-8"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.6 }}
+                            >
+                                {[
+                                    { icon: 'fas fa-newspaper', value: totalArticles, label: totalArticles > 1 ? 'Articles' : 'Article' },
+                                    { icon: 'fas fa-folder-open', value: totalCategories, label: totalCategories > 1 ? 'Catégories' : 'Catégorie' },
+                                    { icon: 'far fa-clock', value: `~${avgReadTime} min`, label: 'Lecture moy.' },
+                                ].map((stat) => (
+                                    <div key={stat.label} className="flex items-center gap-2">
+                                        <i className={`${stat.icon} text-sm`} style={{ color: 'var(--blog-accent)' }} />
+                                        <span className="font-bold text-sm" style={{ color: 'var(--blog-text)' }}>
+                                            {stat.value}
+                                        </span>
+                                        <span className="text-xs" style={{ color: 'var(--blog-muted)' }}>
+                                            {stat.label}
+                                        </span>
+                                    </div>
+                                ))}
+                            </motion.div>
+                        )}
+
+                        {/* Social links */}
+                        <motion.div
+                            className="flex gap-3"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.7 }}
+                        >
+                            <a
+                                href={linkedin}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                                style={{
+                                    backgroundColor: 'rgba(99,102,241,0.1)',
+                                    color: 'var(--blog-accent)',
+                                    border: '1px solid rgba(99,102,241,0.25)',
+                                }}
+                            >
+                                <i className="fab fa-linkedin-in" />
+                                LinkedIn
+                            </a>
+                            <a
+                                href={github}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                                style={{
+                                    backgroundColor: 'var(--blog-surface)',
+                                    color: 'var(--blog-muted)',
+                                    border: '1px solid var(--blog-border)',
+                                }}
+                            >
+                                <i className="fab fa-github" />
+                                GitHub
+                            </a>
+                        </motion.div>
                     </motion.div>
                 </div>
+
+                {/* Bottom border with gradient */}
+                <div
+                    className="h-px w-full"
+                    style={{ background: 'linear-gradient(90deg, transparent 0%, var(--blog-accent) 50%, transparent 100%)', opacity: 0.3 }}
+                />
             </section>
+            {/* ── END BANNER ───────────────────────────────────────── */}
 
             <div className="container mx-auto px-6 py-16">
                 {/* Category filter */}
