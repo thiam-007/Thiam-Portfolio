@@ -15,6 +15,7 @@ import projectRoutes from './routes/projectRoutes';
 import certificationRoutes from './routes/certifications';
 import contactRoutes from './routes/contact';
 import profileRoutes from './routes/profile';
+import blogRoutes from './routes/blogRoutes';
 import { errorHandler } from './middleware/errorHandler';
 
 const app = express();
@@ -64,6 +65,7 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/certifications', certificationRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/blogs', blogRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Backend is running' });

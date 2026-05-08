@@ -75,6 +75,23 @@ export interface Contact {
     createdAt: string;
 }
 
+// Blog Types
+export interface Blog {
+    _id: string;
+    title: string;
+    slug: string;
+    excerpt: string;
+    content: string;
+    coverImage?: string;
+    tags: string[];
+    category: string;
+    status: 'draft' | 'published';
+    readTime: number;
+    publishedAt?: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
 // Admin Types
 export interface Admin {
     id: string;
