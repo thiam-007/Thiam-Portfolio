@@ -84,6 +84,20 @@ export const apiClient = {
         login: (email: string, password: string) => api.post('/auth/login', { email, password }),
         createAdmin: (data: any) => api.post('/auth/create-admin', data),
     },
+
+    // Blogs
+    blogs: {
+        getAll: (params?: { category?: string; tag?: string; limit?: number }) =>
+            api.get('/blogs', { params }),
+        getAllAdmin: () => api.get('/blogs/all'),
+        getBySlug: (slug: string) => api.get(`/blogs/${slug}`),
+        getById: (id: string) => api.get(`/blogs/admin/${id}`),
+        create: (formData: FormData) =>
+            api.post('/blogs', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+        update: (id: string, formData: FormData) =>
+            api.put(`/blogs/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+        delete: (id: string) => api.delete(`/blogs/${id}`),
+    },
 };
 
 export default api;

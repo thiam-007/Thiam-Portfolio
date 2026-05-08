@@ -25,6 +25,17 @@ module.exports = {
                     DEFAULT: '#e6f1ff',
                     muted: '#8892b0',
                 },
+                blog: {
+                    bg: '#020617',
+                    card: '#0F172A',
+                    surface: '#1E293B',
+                    accent: '#6366F1',
+                    'accent-hover': '#818CF8',
+                    tag: '#38BDF8',
+                    text: '#F8FAFC',
+                    muted: '#94A3B8',
+                    border: '#334155',
+                },
             },
             fontFamily: {
                 sans: ['Poppins', 'sans-serif'],

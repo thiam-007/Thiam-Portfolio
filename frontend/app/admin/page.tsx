@@ -104,6 +104,17 @@ export default function AdminDashboard() {
                         </div>
                     </Link>
 
+                    <Link href="/admin/blogs" className="admin-card hover:bg-[var(--secondary)]/80 transition-colors block cursor-pointer">
+                        <h3 className="text-xl font-semibold mb-4" style={{ color: '#818CF8' }}>
+                            <i className="fas fa-pen-nib mr-2"></i>
+                            Blog
+                        </h3>
+                        <p className="text-[var(--gray)] mb-4">Gérez vos articles de blog</p>
+                        <div className="text-sm text-[var(--gray)] mb-4">
+                            Créer, modifier ou supprimer des articles
+                        </div>
+                    </Link>
+
                     <Link href="/" className="admin-card hover:bg-[var(--secondary)]/80 transition-colors block cursor-pointer">
                         <h3 className="text-xl font-semibold mb-4 text-[var(--accent)]">
                             <i className="fas fa-home mr-2"></i>

@@ -72,6 +72,7 @@ export default function Navigation() {
                     <a href="/#experience" className="nav-link">Expérience</a>
                     <a href="/#projects" className="nav-link">Projets</a>
                     <a href="/#certifications" className="nav-link">Certifications</a>
+                    <Link href="/blog" className="nav-link" style={{ color: 'var(--blog-accent)' }}>Blog</Link>
                     <a href="/#contact" className="nav-link">Contact</a>
                     {cvUrl && (
                         <a
@@ -123,6 +124,9 @@ export default function Navigation() {
                         <a href="/#certifications" className="block py-2" onClick={() => setIsMobileMenuOpen(false)}>
                             Certifications
                         </a>
+                        <Link href="/blog" className="block py-2 font-medium" style={{ color: 'var(--blog-accent)' }} onClick={() => setIsMobileMenuOpen(false)}>
+                            Blog
+                        </Link>
                         <a href="/#contact" className="block py-2" onClick={() => setIsMobileMenuOpen(false)}>
                             Contact
                         </a>
