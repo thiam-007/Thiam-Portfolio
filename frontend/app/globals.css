@@ -246,6 +246,17 @@ h6 {
   transform: translateY(0);
 } -- REMOVED */
 
+/* Profile image responsive object-position */
+.profile-img {
+  object-position: center 20%;
+}
+
+@media (min-width: 768px) {
+  .profile-img {
+    object-position: center top;
+  }
+}
+
 /* Typing Cursor Animation */
 .typing-cursor {
   animation: blink 1s infinite;
