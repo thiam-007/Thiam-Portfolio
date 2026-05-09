@@ -91,13 +91,6 @@ export default function Projects() {
                                 <div className="p-6">
                                     <h3 className="text-xl font-semibold mb-3">{project.title}</h3>
                                     <p className="text-[var(--gray)] mb-4 line-clamp-3">{project.description}</p>
-                                    <div className="flex flex-wrap gap-2 mb-4">
-                                        {project.tech?.slice(0, 3).map((tag, i) => (
-                                            <span key={i} className="tag">
-                                                {tag}
-                                            </span>
-                                        ))}
-                                    </div>
                                     <span className="text-[var(--accent)] flex items-center">
                                         <span>En savoir plus</span>
                                         <i className="fas fa-arrow-right ml-2"></i>
