@@ -40,8 +40,9 @@ export default function Navigation() {
 
     return (
         <nav
-            className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-[var(--primary)] shadow-lg' : ''
-                }`}
+            className={`fixed w-full z-50 transition-all duration-300 ${
+                scrolled ? 'bg-[var(--primary)] shadow-lg' : 'bg-[var(--primary)] md:bg-transparent'
+            }`}
             role="navigation"
             aria-label="Main Navigation"
         >

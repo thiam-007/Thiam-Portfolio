@@ -64,7 +64,7 @@ export default function Hero() {
     }, [charIndex, isDeleting, textIndex, texts]);
 
     return (
-        <section id="hero" className="h-screen flex items-center justify-center relative overflow-hidden">
+        <section id="hero" className="min-h-screen pt-16 md:pt-20 pb-10 flex items-center justify-center relative overflow-hidden">
             <div className="absolute inset-0 z-0">
                 <div className="absolute inset-0 bg-[var(--primary)]"></div>
                 {/* Glow indigo subtil en haut-gauche */}
@@ -86,9 +86,9 @@ export default function Hero() {
             </div>
 
             <div className="container mx-auto px-6 z-10">
-                <div className="flex flex-col-reverse md:flex-row items-center justify-between">
+                <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-8 md:gap-4">
                     <motion.div
-                        className="w-full md:w-2/3 text-center md:text-left"
+                        className="w-full md:w-3/5 text-center md:text-left"
                         initial={{ opacity: 0, x: -50 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.8, ease: "easeOut" }}
@@ -108,7 +108,7 @@ export default function Hero() {
                             })()}
                         </motion.p>
                         <motion.h1
-                            className="text-4xl md:text-6xl font-bold mb-4"
+                            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.4, duration: 0.5 }}
@@ -116,7 +116,7 @@ export default function Hero() {
                             {profile.name}
                         </motion.h1>
                         <motion.h2
-                            className="text-2xl md:text-4xl font-semibold text-[var(--gray)] mb-6"
+                            className="text-lg sm:text-xl md:text-2xl lg:text-4xl font-semibold text-[var(--gray)] mb-6"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.6, duration: 0.5 }}
@@ -154,12 +154,12 @@ export default function Hero() {
                     </motion.div>
 
                     <motion.div
-                        className="w-full md:w-2/5 flex justify-center mb-12 md:mb-0"
+                        className="w-full md:w-2/5 flex justify-center mb-6 md:mb-0"
                         initial={{ opacity: 0, scale: 0.5 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.5, duration: 0.8 }}
                     >
-                        <div className="w-64 h-64 md:w-96 md:h-96 lg:w-[480px] lg:h-[480px] relative">
+                        <div className="w-44 h-44 sm:w-56 sm:h-56 md:w-72 md:h-72 lg:w-96 lg:h-96 relative">
                             <motion.div
                                 className="absolute inset-0 rounded-full border-2 border-[var(--accent)]"
                                 animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.2, 0.5] }}
@@ -169,10 +169,7 @@ export default function Hero() {
                                 <img
                                     src={profile.profileImageUrl}
                                     alt={profile.name}
-                                    className="w-full h-full object-cover"
-                                    style={{
-                                        objectPosition: typeof window !== 'undefined' && window.innerWidth < 768 ? 'center 30%' : 'center top'
-                                    }}
+                                    className="w-full h-full object-cover profile-img"
                                 />
                             </div>
                         </div>
