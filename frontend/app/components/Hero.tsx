@@ -143,7 +143,7 @@ export default function Hero() {
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.5, duration: 0.8 }}
                     >
-                        <div className="w-44 h-44 sm:w-56 sm:h-56 md:w-72 md:h-72 lg:w-96 lg:h-96 relative">
+                        <div className="w-44 h-44 sm:w-56 sm:h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 relative">
                             <motion.div
                                 className="absolute inset-0 rounded-full border-2 border-[var(--accent)]"
                                 animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.2, 0.5] }}
