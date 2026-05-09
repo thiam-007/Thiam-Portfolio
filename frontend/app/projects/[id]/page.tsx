@@ -1,6 +1,5 @@
 'use client';
 
-import { use } from 'react';
 import Link from 'next/link';
 import useSWR from 'swr';
 import { motion } from 'framer-motion';
@@ -16,8 +15,8 @@ const fetcher = (url: string) =>
         return res.json();
     });
 
-export default function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = use(params);
+export default function ProjectDetailPage({ params }: { params: { id: string } }) {
+    const { id } = params;
     const { data: project, error } = useSWR<Project>(`${API_URL}/api/projects/${id}`, fetcher);
 
     return (
