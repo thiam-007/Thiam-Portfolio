@@ -199,7 +199,7 @@ export default function AdminBlogs() {
                                         className="bg-[var(--secondary)] rounded-lg p-5 flex items-center gap-4"
                                     >
                                         {/* Cover thumb */}
-                                        <div className="w-20 h-16 rounded overflow-hidden flex-shrink-0 bg-gray-700">
+                                        <div className="w-20 h-16 rounded overflow-hidden flex-shrink-0 bg-[var(--surface)]">
                                             {blog.coverImage ? (
                                                 <img
                                                     src={blog.coverImage}
@@ -208,7 +208,7 @@ export default function AdminBlogs() {
                                                 />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center">
-                                                    <i className="fas fa-image text-gray-500 text-xl" />
+                                                    <i className="fas fa-image text-[var(--gray)] text-xl" />
                                                 </div>
                                             )}
                                         </div>
@@ -443,12 +443,12 @@ export default function AdminBlogs() {
                                 <button
                                     type="button"
                                     onClick={() => setIsEditing(false)}
-                                    className="px-6 py-2.5 rounded-lg bg-gray-600 hover:bg-gray-700 text-white font-medium"
+                                    className="px-6 py-2.5 rounded-lg bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--text)] font-medium"
                                 >
                                     Annuler
                                 </button>
                                 <button type="submit" className="btn-primary">
-                                    {form._id ? 'Mettre à jour' : 'Créer l'article'}
+                                    {form._id ? 'Mettre à jour' : "Créer l'article"}
                                 </button>
                             </div>
                         </form>

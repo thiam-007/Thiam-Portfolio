@@ -7,24 +7,8 @@ export default function Navigation() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [scrolled, setScrolled] = useState(false);
-    const [cvUrl, setCvUrl] = useState<string | null>(null);
-    const getApiUrl = () => {
-        const url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-        return url.replace(/\/api\/?$/, '');
-    };
-    const API_URL = getApiUrl();
 
     useEffect(() => {
-        // Fetch CV URL
-        fetch(`${API_URL}/api/profile`)
-            .then(res => res.ok ? res.json() : null)
-            .then(data => {
-                if (data && data.cvUrl) {
-                    setCvUrl(data.cvUrl);
-                }
-            })
-            .catch(err => console.error('Error fetching CV for nav:', err));
-
         // Check for saved dark mode preference
         const savedMode = localStorage.getItem('dark-mode');
         if (savedMode === 'enabled') {
@@ -74,21 +58,9 @@ export default function Navigation() {
                     <a href="/#certifications" className="nav-link">Certifications</a>
                     <Link href="/blog" className="nav-link" style={{ color: 'var(--blog-accent)' }}>Blog</Link>
                     <a href="/#contact" className="nav-link">Contact</a>
-                    {cvUrl && (
-                        <a
-                            href={cvUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="px-4 py-2 rounded-md border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-[#0a192f] transition-all duration-300 flex items-center font-medium"
-                            aria-label="Download CV"
-                        >
-                            <i className="fas fa-file-pdf mr-2" aria-hidden="true"></i>
-                            CV
-                        </a>
-                    )}
                     <button
                         onClick={toggleDarkMode}
-                        className="p-2 rounded-full hover:bg-gray-700/20"
+                        className="p-2 rounded-full hover:bg-[var(--surface)]"
                         aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
                     >
                         <i className={`fas fa-${isDarkMode ? 'sun' : 'moon'}`} aria-hidden="true"></i>
@@ -130,18 +102,6 @@ export default function Navigation() {
                         <a href="/#contact" className="block py-2" onClick={() => setIsMobileMenuOpen(false)}>
                             Contact
                         </a>
-                        {cvUrl && (
-                            <a
-                                href={cvUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="block text-[var(--text-secondary)] hover:text-[var(--accent)] py-2 transition-colors flex items-center"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                aria-label="Download CV"
-                            >
-                                <i className="fas fa-file-pdf mr-2 w-5" aria-hidden="true"></i> Mon CV
-                            </a>
-                        )}
                         <button
                             onClick={() => {
                                 toggleDarkMode();

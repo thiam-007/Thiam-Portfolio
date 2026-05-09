@@ -105,7 +105,7 @@ export default function AdminDashboard() {
                     </Link>
 
                     <Link href="/admin/blogs" className="admin-card hover:bg-[var(--secondary)]/80 transition-colors block cursor-pointer">
-                        <h3 className="text-xl font-semibold mb-4" style={{ color: '#818CF8' }}>
+                        <h3 className="text-xl font-semibold mb-4" style={{ color: 'var(--accent)' }}>
                             <i className="fas fa-pen-nib mr-2"></i>
                             Blog
                         </h3>

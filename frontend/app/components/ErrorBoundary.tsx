@@ -27,13 +27,13 @@ class ErrorBoundary extends Component<Props, State> {
     public render() {
         if (this.state.hasError) {
             return (
-                <div className="min-h-screen flex items-center justify-center bg-[#0a192f] text-white p-6">
+                <div className="min-h-screen flex items-center justify-center bg-[var(--primary)] text-[var(--text)] p-6">
                     <div className="max-w-md text-center">
                         <h1 className="text-4xl font-bold text-[var(--accent)] mb-4">Oups !</h1>
                         <p className="text-xl mb-6">Une erreur inattendue s'est produite.</p>
                         <button
                             onClick={() => window.location.reload()}
-                            className="px-6 py-2 rounded-md border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-[#0a192f] transition-all duration-300"
+                            className="px-6 py-2 rounded-md border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-white transition-all duration-300"
                         >
                             Actualiser la page
                         </button>

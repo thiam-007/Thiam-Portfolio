@@ -217,7 +217,7 @@ export default function AdminCertifications() {
                                     required={!currentCert._id} // Required only on creation
                                 />
                                 {currentCert.file_path && !selectedFile && (
-                                    <p className="text-sm text-gray-400 mt-1">Fichier actuel conservé</p>
+                                    <p className="text-sm text-[var(--gray)] mt-1">Fichier actuel conservé</p>
                                 )}
                             </div>
 
@@ -232,7 +232,7 @@ export default function AdminCertifications() {
                                 />
                                 {currentCert.cover_image && !selectedCover && (
                                     <div className="mt-2">
-                                        <p className="text-sm text-gray-400 mb-1">Image actuelle :</p>
+                                        <p className="text-sm text-[var(--gray)] mb-1">Image actuelle :</p>
                                         <img src={currentCert.cover_image} alt="Cover" className="h-20 w-auto rounded" />
                                     </div>
                                 )}
@@ -282,7 +282,7 @@ export default function AdminCertifications() {
                                 <button
                                     type="button"
                                     onClick={() => setIsEditing(false)}
-                                    className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-700"
+                                    className="px-4 py-2 rounded bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--text)]"
                                 >
                                     Annuler
                                 </button>

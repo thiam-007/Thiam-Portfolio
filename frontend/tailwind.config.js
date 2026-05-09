@@ -9,21 +9,28 @@ module.exports = {
         extend: {
             colors: {
                 primary: {
-                    DEFAULT: '#0a192f',
-                    light: '#112240',
+                    DEFAULT: '#020617',
+                    light: '#0F172A',
                 },
                 secondary: {
-                    DEFAULT: '#112240',
-                    light: '#1d2d50',
+                    DEFAULT: '#0F172A',
+                    light: '#1E293B',
+                },
+                surface: {
+                    DEFAULT: '#1E293B',
                 },
                 accent: {
-                    DEFAULT: '#cca354',
-                    light: '#d4b36a',
-                    dark: '#b8903d',
+                    DEFAULT: '#6366F1',
+                    hover: '#818CF8',
+                    dark: '#4F46E5',
+                    sky: '#38BDF8',
                 },
                 textColor: {
-                    DEFAULT: '#e6f1ff',
-                    muted: '#8892b0',
+                    DEFAULT: '#F8FAFC',
+                    muted: '#94A3B8',
+                },
+                border: {
+                    DEFAULT: '#1E293B',
                 },
                 blog: {
                     bg: '#020617',
@@ -34,7 +41,7 @@ module.exports = {
                     tag: '#38BDF8',
                     text: '#F8FAFC',
                     muted: '#94A3B8',
-                    border: '#334155',
+                    border: '#1E293B',
                 },
             },
             fontFamily: {

@@ -128,11 +128,11 @@ export default function AdminProjects() {
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {projects.map((proj: any) => (
                                     <div key={proj._id} className="bg-[var(--secondary)] rounded-lg overflow-hidden shadow-lg">
-                                        <div className="h-40 bg-gray-700 relative">
+                                        <div className="h-40 bg-[var(--surface)] relative">
                                             {proj.cover_url ? (
                                                 <img src={proj.cover_url} alt={proj.title} className="w-full h-full object-cover" />
                                             ) : (
-                                                <div className="flex items-center justify-center h-full text-gray-500">Pas d'image</div>
+                                                <div className="flex items-center justify-center h-full text-[var(--gray)]">Pas d'image</div>
                                             )}
                                         </div>
                                         <div className="p-4">
@@ -182,7 +182,7 @@ export default function AdminProjects() {
                                     className="w-full p-2 bg-[var(--primary)] rounded text-white"
                                 />
                                 {(currentProject.cover_url || selectedImage) && (
-                                    <p className="text-sm text-gray-400 mt-1">
+                                    <p className="text-sm text-[var(--gray)] mt-1">
                                         {selectedImage ? `Image sélectionnée: ${selectedImage.name}` : 'Image actuelle conservée'}
                                     </p>
                                 )}
@@ -242,7 +242,7 @@ export default function AdminProjects() {
                                 <button
                                     type="button"
                                     onClick={() => setIsEditing(false)}
-                                    className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-700"
+                                    className="px-4 py-2 rounded bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--text)]"
                                 >
                                     Annuler
                                 </button>
